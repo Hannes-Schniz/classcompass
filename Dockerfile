@@ -7,23 +7,23 @@ RUN apt install git -y
 
 RUN apt install python3 -y
 
+RUN apt install python3.12-venv -y
+
 RUN apt install sqlite3 libsqlite3-dev -y
 
+RUN apt install cron -y
+
 RUN useradd -ms /bin/bash navigator
-USER navigator
-
-WORKDIR /home/navigator
-
-RUN git clone https://github.com/Hannes-Schniz/classcompass.git
-
-RUN touch /var/spool/cron/crontabs/navigator
 
 RUN echo "* * * * * bash /home/navigator/classcompass/exec.sh" >> /var/spool/cron/crontabs/navigator
 
-RUN python -m venv .venv
-RUN source .venv/bin/activate
-RUN pip install -r classcompass/requirements.txt
+WORKDIR /home/navigator
 
+RUN python3 -m venv /opt/venv
+RUN . /opt/venv/bin/activate && pip install -r classcompass/requirements.txt
 
-ENTRYPOINT [ "source /home/navigator/.venv/bin/activate; bash" ]
+USER navigator
+RUN git clone https://github.com/Hannes-Schniz/classcompass.git
+
+ENTRYPOINT [ "source /home/navigator/.venv/bin/activate; /bin/sh" ]
 
