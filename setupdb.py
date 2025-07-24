@@ -8,6 +8,9 @@ DBPATHDEF="maps.db"
 CREATECLASSESSQLFILE="createClasses.sql"
 CREATEDIFFSQLFILE="createDiff.sql"
 
+#TODO: sanitize debug output
+#TODO: set correct DB_PATH when using default
+
 def get_sql_dir():
     """Get SQL files directory from environment variable or use default."""
     sql_dir = os.environ.get(SQLDIRVAR, '').strip()

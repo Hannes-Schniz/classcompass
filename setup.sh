@@ -8,3 +8,5 @@ cd $SOURCE
 python3 setupdb.py
 
 python3 setupconfig.py
+
+# TODO: move setup files in setup folder    
