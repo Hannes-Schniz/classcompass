@@ -16,5 +16,14 @@ WORKDIR /home/navigator
 
 RUN git clone https://github.com/Hannes-Schniz/classcompass.git
 
-RUN echo "* * * * * bash /home/navigator/classcompass/exec.sh"
+RUN touch /var/spool/cron/crontabs/navigator
+
+RUN echo "* * * * * bash /home/navigator/classcompass/exec.sh" >> /var/spool/cron/crontabs/navigator
+
+RUN python -m venv .venv
+RUN source .venv/bin/activate
+RUN pip install -r classcompass/requirements.txt
+
+
+ENTRYPOINT [ "source /home/navigator/.venv/bin/activate; bash" ]
 
