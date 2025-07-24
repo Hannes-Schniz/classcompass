@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "test"
+echo "test" >> /home/navigator/test
