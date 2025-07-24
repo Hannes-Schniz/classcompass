@@ -1,0 +1,18 @@
+CREATE TABLE diff(
+    batchID,
+    oldDate,
+    newDate,
+    oldStart,
+    newStart,
+    oldEnd,
+    newEnd,
+    oldState,
+    newState,
+    oldStateDetail,
+    newStateDetail,
+    oldRoom,
+    newRoom,
+    oldSubject,
+    newSubject,
+    oldText,
+    newText)

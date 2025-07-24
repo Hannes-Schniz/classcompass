@@ -1,2 +1,8 @@
 #!/bin/bash
-echo "test" >> /home/navigator/test
+
+
+source $VENV
+
+cd $SOURCE
+
+python3 setupdb.py

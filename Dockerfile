@@ -19,11 +19,20 @@ RUN echo "* * * * * bash /home/navigator/classcompass/exec.sh" >> /var/spool/cro
 
 WORKDIR /home/navigator
 
-RUN python3 -m venv /opt/venv
-RUN . /opt/venv/bin/activate && pip install -r classcompass/requirements.txt
-
 USER navigator
 RUN git clone https://github.com/Hannes-Schniz/classcompass.git
 
-ENTRYPOINT [ "source /home/navigator/.venv/bin/activate; /bin/sh" ]
+USER root
+
+RUN python3 -m venv /opt/venv
+RUN . /opt/venv/bin/activate && pip install -r /home/navigator/classcompass/requirements.txt
+
+ENV VENV="/opt/venv/bin/activate"
+ENV SOURCE="/home/navigator/classcompass"
+
+RUN bash classcompass/setup.sh
+
+RUN echo "source /opt/venv/bin/activate" >> /home/navigator/.bashrc
+
+CMD [ "/bin/bash" ]
 
