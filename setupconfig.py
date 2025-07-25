@@ -91,7 +91,8 @@ def main():
         
         print(f"[INF] Config file created successfully at: {config_path}")
         print("[INF] Configuration:")
-        print(json.dumps(config, indent=2))
+        for line in json.dumps(config, indent=2).split('\n'):
+            print(f"[INF] {line}")
         
         # Print environment variables that were used
         print("\n[INF] Environment variables used:")
