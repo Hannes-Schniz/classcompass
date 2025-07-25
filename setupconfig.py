@@ -95,7 +95,7 @@ def main():
             print(f"[INF] {line}")
         
         # Print environment variables that were used
-        print("\n[INF] Environment variables used:")
+        print("[INF] Environment variables used:")
         env_vars = [
             ("CLASS_ID", config["classID"]),
             ("COLOR_PRIMARY", config["color-scheme"]["primary"]),
