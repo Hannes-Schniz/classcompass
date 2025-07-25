@@ -17,6 +17,25 @@ DEFAULTWEEKSAHEAD=3
 DEFAULTMAINTENANCE=False
 DEFAULTSHOWCANCELLED=False
 DEFAULTSHOWCHANGES=False
+ENVCLASSID= "CLASS_ID"
+ENVPRIMARYCOLOR= "COLOR_PRIMARY"
+ENVCANCELLEDCOLOR="COLOR_CANCELLED"
+ENVCHANGEDCOLOR="COLOR_CHANGED"
+ENVEXAMCOLOR="COLOR_EXAM"
+ENVWEEKSAHEAD="WEEKS_AHEAD"
+ENVMAINTENANCE="MAINTENANCE"
+ENVSHOWCANCELLED="SHOW_CANCELLED"
+ENVSHOWCHANGED="SHOW_CHANGES"
+CFGCLASSID="classID"
+CFGCOLORSCHEME="color-scheme"
+CFGPRIMARYCOLOR="primary"
+CFGCANCELLEDCOLOR="cancelled"
+CFGCHANGEDCOLOR="changed"
+CFGEXAMCOLOR="exam"
+CFGWEEKSAHEAD="weeksAhead"
+CFGMAINTENANCE="maintenance"
+CFGSHOWCANCELLED="showCancelled"
+CFGSHOWCHANGES="showChanges"
 
 
 def get_env_or_default(env_var, default_value, value_type=str):
@@ -61,17 +80,17 @@ def create_config():
     
     # Read environment variables with defaults based on the template
     config = {
-        "classID": get_env_or_default("CLASS_ID", f"{DEFAULTCLASSID}"),
-        "color-scheme": {
-            "primary": get_env_or_default("COLOR_PRIMARY", f"{DEFAULTPRIMARY}"),
-            "cancelled": get_env_or_default("COLOR_CANCELLED", f"{DEFAULTCANCELLED}"),
-            "changed": get_env_or_default("COLOR_CHANGED", f"{DEFAULTCHANGED}"),
-            "exam": get_env_or_default("COLOR_EXAM", f"{DEFAULTEXAM}")
+        CFGCLASSID: get_env_or_default(ENVCLASSID, f"{DEFAULTCLASSID}"),
+        CFGCOLORSCHEME: {
+            CFGPRIMARYCOLOR: get_env_or_default(ENVPRIMARYCOLOR, f"{DEFAULTPRIMARY}"),
+            CFGCANCELLEDCOLOR: get_env_or_default(ENVCANCELLEDCOLOR, f"{DEFAULTCANCELLED}"),
+            CFGCHANGEDCOLOR: get_env_or_default(ENVCHANGEDCOLOR, f"{DEFAULTCHANGED}"),
+            CFGEXAMCOLOR: get_env_or_default(ENVEXAMCOLOR, f"{DEFAULTEXAM}")
         },
-        "weeksAhead": get_env_or_default("WEEKS_AHEAD", DEFAULTWEEKSAHEAD, int),
-        "maintenance": get_env_or_default("MAINTENANCE", DEFAULTMAINTENANCE, bool),
-        "showCancelled": get_env_or_default("SHOW_CANCELLED", DEFAULTSHOWCANCELLED, bool),
-        "showChanges": get_env_or_default("SHOW_CHANGES", DEFAULTSHOWCHANGES, bool)
+        CFGWEEKSAHEAD: get_env_or_default(ENVWEEKSAHEAD, DEFAULTWEEKSAHEAD, int),
+        CFGMAINTENANCE: get_env_or_default(ENVMAINTENANCE, DEFAULTMAINTENANCE, bool),
+        CFGSHOWCANCELLED: get_env_or_default(ENVSHOWCANCELLED, DEFAULTSHOWCANCELLED, bool),
+        CFGSHOWCHANGES: get_env_or_default(ENVSHOWCHANGED, DEFAULTSHOWCHANGES, bool)
         }
     
     return config
@@ -97,15 +116,15 @@ def main():
         # Print environment variables that were used
         print("[INF] Environment variables used:")
         env_vars = [
-            ("CLASS_ID", config["classID"]),
-            ("COLOR_PRIMARY", config["color-scheme"]["primary"]),
-            ("COLOR_CANCELLED", config["color-scheme"]["cancelled"]),
-            ("COLOR_CHANGED", config["color-scheme"]["changed"]),
-            ("COLOR_EXAM", config["color-scheme"]["exam"]),
-            ("WEEKS_AHEAD", config["weeksAhead"]),
-            ("MAINTENANCE", config["maintenance"]),
-            ("SHOW_CANCELLED", config["showCancelled"]),
-            ("SHOW_CHANGES", config["showChanges"])
+            (ENVCLASSID, config[CFGCLASSID]),
+            (ENVPRIMARYCOLOR, config[CFGCOLORSCHEME][CFGPRIMARYCOLOR]),
+            (ENVCANCELLEDCOLOR, config[CFGCOLORSCHEME][CFGCANCELLEDCOLOR]),
+            (ENVCHANGEDCOLOR, config[CFGCOLORSCHEME][CFGCHANGEDCOLOR]),
+            (ENVEXAMCOLOR, config[CFGCOLORSCHEME][CFGEXAMCOLOR]),
+            (ENVWEEKSAHEAD, config[CFGWEEKSAHEAD]),
+            (ENVMAINTENANCE, config[CFGMAINTENANCE]),
+            (ENVSHOWCANCELLED, config[CFGSHOWCANCELLED]),
+            (ENVSHOWCHANGED, config[CFGSHOWCHANGES])
         ]
         
         for env_var, value in env_vars:
