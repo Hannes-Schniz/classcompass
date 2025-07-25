@@ -43,7 +43,7 @@ def get_env_or_default(env_var, default_value, value_type=str):
             elif value.lower() in ('false', '0', 'no', 'off'):
                 return False
             else:
-                print(f"Warning: Invalid boolean value '{value}' for {env_var}, using default: {default_value}")
+                print(f"[WRN] Invalid boolean value '{value}' for {env_var}, using default: {default_value}")
                 return default_value
         elif value_type == int:
             return int(value)
@@ -52,7 +52,7 @@ def get_env_or_default(env_var, default_value, value_type=str):
         else:
             return value
     except ValueError:
-        print(f"Warning: Invalid value '{value}' for {env_var}, using default: {default_value}")
+        print(f"[WRN] Invalid value '{value}' for {env_var}, using default: {default_value}")
         return default_value
 
 
@@ -89,12 +89,12 @@ def main():
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
         
-        print(f"✅ Config file created successfully at: {config_path}")
-        print("Configuration:")
+        print(f"[INF] Config file created successfully at: {config_path}")
+        print("[INF] Configuration:")
         print(json.dumps(config, indent=2))
         
         # Print environment variables that were used
-        print("\nEnvironment variables used:")
+        print("\n[INF] Environment variables used:")
         env_vars = [
             ("CLASS_ID", config["classID"]),
             ("COLOR_PRIMARY", config["color-scheme"]["primary"]),
@@ -110,12 +110,12 @@ def main():
         for env_var, value in env_vars:
             env_value = os.environ.get(env_var, '').strip()
             if env_value:
-                print(f"  {env_var}={env_value} ✓")
+                print(f"[INF]  {env_var}={env_value} ✓")
             else:
-                print(f"  {env_var}=(not set, using default: {value})")
+                print(f"[INF]  {env_var}=(not set, using default: {value})")
                 
     except Exception as e:
-        print(f"❌ Error creating config file: {e}", file=sys.stderr)
+        print(f"[ERR] Error creating config file: {e}", file=sys.stderr)
         sys.exit(1)
 
 
