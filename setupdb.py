@@ -18,7 +18,7 @@ def get_sql_dir():
         sql_dir = "sql"  # Default fallback
     
     if not os.path.exists(sql_dir):
-        print(f"❌ Error: SQL directory not found: {sql_dir}")
+        print(f"[ERR] SQL directory not found: {sql_dir}")
         sys.exit(1)
     
     return sql_dir
@@ -32,7 +32,7 @@ def get_db_path():
     # Ensure the directory exists if it's a full path
     db_dir = os.path.dirname(db_path)
     if db_dir and not os.path.exists(db_dir):
-        print(f"📁 Creating database directory: {db_dir}")
+        print(f"[INF] Creating database directory: {db_dir}")
         os.makedirs(db_dir, exist_ok=True)
     
     return db_path
@@ -40,27 +40,27 @@ def get_db_path():
 def main():
     """Main function to set up the database with proper logging."""
     try:
-        print("🔧 Starting database setup...")
+        print("[INF] Starting database setup...")
         
         # Connect to database
         db_path = get_db_path()
-        print(f"📦 Connecting to database: {db_path}")
+        print(f"[INF] Connecting to database: {db_path}")
         if os.environ.get(DBPATHVAR):
-            print(f"📍 Database path set via environment variable")
+            print(f"[INF] Database path set via environment variable")
         else:
-            print(f"📍 Using default database path (set DB_PATH or DATABASE_PATH to override)")
+            print(f"[INF] Using default database path (set DB_PATH or DATABASE_PATH to override)")
         
         con = sqlite3.connect(db_path)
         cur = con.cursor()
-        print("✅ Database connection established")
+        print("[INF] Database connection established")
 
         # Read SQL files
         sql_dir = get_sql_dir()
-        print(f"📂 SQL files directory: {sql_dir}")
+        print(f"[INF] SQL files directory: {sql_dir}")
         if os.environ.get(SQLDIRVAR):
-            print(f"📍 SQL directory set via environment variable")
+            print(f"[INF] SQL directory set via environment variable")
         else:
-            print(f"📍 Using default SQL directory (set SQL_DIR to override)")
+            print(f"[INF] Using default SQL directory (set SQL_DIR to override)")
         
         sql_files = [
             (os.path.join(sql_dir, CREATECLASSESSQLFILE), 'Classes table creation'),
@@ -69,39 +69,39 @@ def main():
         
         for sql_file, description in sql_files:
             if not os.path.exists(sql_file):
-                print(f"❌ Error: SQL file not found: {sql_file}")
+                print(f"[ERR] Error: SQL file not found: {sql_file}")
                 sys.exit(1)
                 
-            print(f"📄 Reading {description} from: {sql_file}")
+            print(f"[INF] Reading {description} from: {sql_file}")
             with open(sql_file, 'r') as f:
                 sql_content = f.read()
             
             if not sql_content.strip():
-                print(f"⚠️  Warning: {sql_file} is empty")
+                print(f"[WRN]  Warning: {sql_file} is empty")
                 continue
                 
-            print(f"🔄 Executing {description}...")
+            print(f"[INF] Executing {description}...")
             cur.executescript(sql_content)
-            print(f"✅ {description} completed successfully")
+            print(f"[INF] {description} completed successfully")
 
         # Commit changes
-        print("💾 Committing database changes...")
+        print("[INF] Committing database changes...")
         con.commit()
-        print("✅ Database changes committed successfully")
+        print("[INF] Database changes committed successfully")
         
         # Close connection
         con.close()
-        print("🔐 Database connection closed")
-        print("🎉 Database setup completed successfully!")
+        print("[INF] Database connection closed")
+        print("[INF] Database setup completed successfully!")
         
     except sqlite3.Error as e:
-        print(f"❌ Database error: {e}", file=sys.stderr)
+        print(f"[ERR] Database error: {e}", file=sys.stderr)
         sys.exit(1)
     except FileNotFoundError as e:
-        print(f"❌ File not found: {e}", file=sys.stderr)
+        print(f"[ERR] File not found: {e}", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Unexpected error: {e}", file=sys.stderr)
+        print(f"[ERR] Unexpected error: {e}", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":
