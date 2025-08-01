@@ -70,19 +70,21 @@ class exporter:
                     if entry['position2'][0]['removed'] != None:
                         changedRoom= changes.append(entry['position2'][0]['removed']['shortName'])
                 
-                periods.append({'name':shortName, 
-                                  'location': room,
-                                  'periodText': longName,
-                                  'cellState': status,
-                                  'date':date,
-                                  'start':start,
-                                  'end':end,
-                                  'type': classType,
-                                  'movedStart': oldStart,
-                                  'movedEnd': oldEnd,
-                                  'changedRoom': changedRoom,
-                                  'changedClass': changedClass,
-                                  'moved': moved})
+                
+                
+                #periods.append({'name':shortName, 
+                #                  'location': room,
+                #                  'periodText': longName,
+                #                  'cellState': status,
+                #                  'date':date,
+                #                  'start':start,
+                #                  'end':end,
+                #                  'type': classType,
+                #                  'movedStart': oldStart,
+                #                  'movedEnd': oldEnd,
+                #                  'changedRoom': changedRoom,
+                #                  'changedClass': changedClass,
+                #                  'moved': moved})
                 #if verbose:
                 #    if entry['statusDetail'] == "MOVED":
                 #        print(f"[VERBOSE] period: {periods[-1]}") 

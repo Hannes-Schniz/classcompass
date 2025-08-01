@@ -7,7 +7,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from configReader import configExtract
 import pytz
-import telegramBot
+import main.alert.telegramBot as telegramBot
 import re
 
 class googleCalCon:
