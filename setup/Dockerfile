@@ -49,7 +49,7 @@ USER root
 # Create Python virtual environment in system location
 # This isolates Python dependencies from the system Python installation
 RUN python3 -m venv /opt/venv
-RUN . /opt/venv/bin/activate && pip install -r /home/navigator/classcompass/requirements.txt
+RUN . /opt/venv/bin/activate && pip install -r /home/navigator/classcompass/setup/requirements.txt
 
 RUN bash classcompass/setup.sh > /tmp/setup.log
 
