@@ -42,7 +42,12 @@ WORKDIR /home/navigator
 
 # Clone the repository as the navigator user (non-root for security)
 USER navigator
-RUN git clone https://github.com/Hannes-Schniz/classcompass.git
+
+COPY ../ /home/navigator/classcompass
+
+RUN ls -la /home/navigator
+
+RUN ls -la /home/navigator/classcompass
 
 USER root
 
