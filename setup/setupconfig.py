@@ -103,7 +103,7 @@ def main():
         config = create_config()
         
         # Write to config.json file
-        config_path = os.path.join(os.path.dirname(__file__), 'config.json')
+        config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.json')
         
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
