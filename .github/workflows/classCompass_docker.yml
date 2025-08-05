@@ -28,7 +28,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: hannesschniz/projects
+          images: hannesschniz/classcompass
 
       - name: Build and push Docker image
         id: push
@@ -43,6 +43,6 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: index.docker.io/my-docker-hub-namespace/my-docker-hub-repository
+          subject-name: index.docker.io/hannesschniz/classcompass
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
