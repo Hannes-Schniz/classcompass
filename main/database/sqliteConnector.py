@@ -15,7 +15,7 @@ class plutus:
         self.cur.execute(insert, (batchID, date, startTime, endTime, type, state, stateDetail, room, subject, substituteText))
     
     def connect(self):
-        self.conn = sqlite3.connect(os.environ['DBPATHDEF'])
+        self.conn = sqlite3.connect(os.environ['DB_PATH'])
         self.cur = self.conn.cursor()
     
     def closeConnection(self):
@@ -27,7 +27,9 @@ class plutus:
         if None == self.conn:
             self.connect()
             close = True
-        currentBatchID = self.cur.execute("select max(batchID) from classes").fetchone()
+        currentBatchID = self.cur.execute("select max(batchID) from classes").fetchone()[0]
+        if  currentBatchID == None:
+            currentBatchID = 0
         if close:
             self.closeConnection()
         return currentBatchID+1
