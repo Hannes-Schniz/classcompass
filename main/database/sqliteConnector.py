@@ -21,4 +21,15 @@ class plutus:
     def closeConnection(self):
         self.conn.commit()
         self.conn.close()
+        
+    def getNewBatchID(self):
+        close = False
+        if None == self.conn:
+            self.connect()
+            close = True
+        currentBatchID = self.cur.execute("select max(batchID) from classes").fetchone()
+        if close:
+            self.closeConnection()
+        return currentBatchID+1
+        
     
