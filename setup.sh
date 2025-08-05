@@ -10,3 +10,4 @@ python3 setup/setupdb.py
 python3 setup/setupconfig.py
 
 # TODO: move setup files in setup folder    
+#test cicd
