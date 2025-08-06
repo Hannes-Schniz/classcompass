@@ -1,0 +1,261 @@
+{% extends "base.html" %} {% block title %}Configuration - ClassCompass
+Management{% endblock %} {% block content %}
+<div class="page-header">
+  <h1>Configuration Management</h1>
+  <p>Edit your ClassCompass application settings</p>
+</div>
+
+<div class="card">
+  <div class="card-header">⚙️ Application Configuration</div>
+  <div class="card-body">
+    <form id="configForm">
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label for="classID">Class ID:</label>
+          <input
+            type="text"
+            id="classID"
+            name="classID"
+            class="form-control"
+            value="{{ config.classID }}"
+            required />
+          <div class="help-text">Your class identifier (e.g., "1234")</div>
+        </div>
+
+        <div class="form-group">
+          <label for="weeksAhead">Weeks Ahead:</label>
+          <input
+            type="number"
+            id="weeksAhead"
+            name="weeksAhead"
+            class="form-control"
+            value="{{ config.weeksAhead }}"
+            min="1"
+            max="52" />
+          <div class="help-text">
+            How many weeks to look ahead for scheduling
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="card"
+        style="margin: 2rem 0; border: 1px solid var(--border-color)">
+        <div class="card-header" style="background: var(--info-color)">
+          🎨 Color Scheme Settings
+        </div>
+        <div class="card-body">
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label for="colorPrimary">Primary Color ID:</label>
+              <input
+                type="text"
+                id="colorPrimary"
+                name="colorPrimary"
+                class="form-control"
+                value="{{ config['color-scheme'].primary }}" />
+              <div class="help-text">
+                Default calendar color (Google Calendar color ID)
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="colorCancelled">Cancelled Color ID:</label>
+              <input
+                type="text"
+                id="colorCancelled"
+                name="colorCancelled"
+                class="form-control"
+                value="{{ config['color-scheme'].cancelled }}" />
+              <div class="help-text">Color for cancelled classes</div>
+            </div>
+
+            <div class="form-group">
+              <label for="colorChanged">Changed Color ID:</label>
+              <input
+                type="text"
+                id="colorChanged"
+                name="colorChanged"
+                class="form-control"
+                value="{{ config['color-scheme'].changed }}" />
+              <div class="help-text">Color for changed classes</div>
+            </div>
+
+            <div class="form-group">
+              <label for="colorExam">Exam Color ID:</label>
+              <input
+                type="text"
+                id="colorExam"
+                name="colorExam"
+                class="form-control"
+                value="{{ config['color-scheme'].exam }}" />
+              <div class="help-text">Color for exams</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input
+              type="checkbox"
+              id="maintenance"
+              name="maintenance"
+              {%
+              if
+              config.maintenance
+              %}checked{%
+              endif
+              %} />
+            <label for="maintenance">Maintenance Mode</label>
+          </div>
+          <div class="help-text">
+            Enable maintenance mode to disable notifications
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input
+              type="checkbox"
+              id="showCancelled"
+              name="showCancelled"
+              {%
+              if
+              config.showCancelled
+              %}checked{%
+              endif
+              %} />
+            <label for="showCancelled">Show Cancelled Classes</label>
+          </div>
+          <div class="help-text">Display cancelled classes in calendar</div>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input
+              type="checkbox"
+              id="showChanges"
+              name="showChanges"
+              {%
+              if
+              config.showChanges
+              %}checked{%
+              endif
+              %} />
+            <label for="showChanges">Show Changed Classes</label>
+          </div>
+          <div class="help-text">Display changed classes in calendar</div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem">
+        <button type="submit" class="btn btn-primary">
+          💾 Save Configuration
+        </button>
+        <button type="button" id="previewBtn" class="btn btn-secondary">
+          👁️ Preview JSON
+        </button>
+        <a
+          href="{{ url_for('reset_config') }}"
+          class="btn btn-danger"
+          onclick="return confirm('Are you sure you want to reset to defaults?')"
+          >🔄 Reset to Defaults</a
+        >
+      </div>
+    </form>
+
+    <div
+      id="jsonPreview"
+      class="json-preview"
+      style="display: none; margin-top: 2rem">
+      <strong>JSON Preview:</strong>
+      <pre id="jsonContent"></pre>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">📖 Google Calendar Color Reference</div>
+  <div class="card-body">
+    <p>Use these color IDs for Google Calendar integration:</p>
+    <div class="grid grid-4">
+      <div><strong>1:</strong> Lavender</div>
+      <div><strong>2:</strong> Sage</div>
+      <div><strong>3:</strong> Grape</div>
+      <div><strong>4:</strong> Flamingo</div>
+      <div><strong>5:</strong> Banana</div>
+      <div><strong>6:</strong> Tangerine</div>
+      <div><strong>7:</strong> Peacock</div>
+      <div><strong>8:</strong> Graphite</div>
+      <div><strong>9:</strong> Blueberry</div>
+      <div><strong>10:</strong> Basil</div>
+      <div><strong>11:</strong> Tomato</div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('configForm');
+    const previewBtn = document.getElementById('previewBtn');
+    const jsonPreview = document.getElementById('jsonPreview');
+    const jsonContent = document.getElementById('jsonContent');
+
+    function getFormData() {
+      return {
+        classID: document.getElementById('classID').value,
+        'color-scheme': {
+          primary: document.getElementById('colorPrimary').value,
+          cancelled: document.getElementById('colorCancelled').value,
+          changed: document.getElementById('colorChanged').value,
+          exam: document.getElementById('colorExam').value,
+        },
+        weeksAhead: parseInt(document.getElementById('weeksAhead').value),
+        maintenance: document.getElementById('maintenance').checked,
+        showCancelled: document.getElementById('showCancelled').checked,
+        showChanges: document.getElementById('showChanges').checked,
+      };
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const config = getFormData();
+
+      fetch('/api/config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(config),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            showAlert('Configuration saved successfully! ✅', 'success');
+          } else {
+            showAlert('Error: ' + (data.error || 'Unknown error'), 'error');
+          }
+        })
+        .catch((error) => {
+          showAlert('Error saving configuration: ' + error.message, 'error');
+        });
+    });
+
+    previewBtn.addEventListener('click', function () {
+      const config = getFormData();
+      jsonContent.textContent = JSON.stringify(config, null, 2);
+
+      if (jsonPreview.style.display === 'none') {
+        jsonPreview.style.display = 'block';
+        previewBtn.textContent = '❌ Hide JSON';
+      } else {
+        jsonPreview.style.display = 'none';
+        previewBtn.textContent = '👁️ Preview JSON';
+      }
+    });
+  });
+</script>
+{% endblock %}

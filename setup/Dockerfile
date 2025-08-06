@@ -12,7 +12,7 @@ ARG SHOWCANCELLED
 ARG SHOWCHANGES
 
 # ARG declarations for database setup variables from setupdb.py
-ARG DB_PATH
+ARG DB_PATH="/home/navigator/classcompass/maps.db"
 ENV DB_PATH=${DB_PATH}
 ARG SQL_DIR
 

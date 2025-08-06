@@ -1,5 +1,6 @@
 import requests
 from configReader import configExtract
+from database.sqliteConnector import plutus
 
 class exporter:
     
@@ -12,8 +13,10 @@ class exporter:
     'accept-language': 'de-DE,de;q=0.9,en-DE;q=0.8,en;q=0.7,en-US;q=0.6',
     'anonymous-school': conf['anonymous-school'],
     'cookie': conf['cookie']
-}
+    }
 
+    database = plutus()
+    
     def getElementMap(self, elements):
         elementMap = {}
         for element in elements:
@@ -34,7 +37,9 @@ class exporter:
         
         
         periods = []
-        
+        self.database.connect()
+        batchID = self.database.getNewBatchID()
+        print(batchID)
         for day in raw_data['days']:
             date = day['date']
             for entry in day['gridEntries']:
@@ -70,6 +75,7 @@ class exporter:
                     if entry['position2'][0]['removed'] != None:
                         changedRoom= changes.append(entry['position2'][0]['removed']['shortName'])
                 
+                self.database.addClass(date,start, end, classType, status, "", room, shortName, subText, batchID)
                 
                 
                 #periods.append({'name':shortName, 
@@ -89,5 +95,6 @@ class exporter:
                 #    if entry['statusDetail'] == "MOVED":
                 #        print(f"[VERBOSE] period: {periods[-1]}") 
         if verbose:
-            print(f"[VERBOSE] {len(periods)} fetched.")  
+            print(f"[VERBOSE] {len(periods)} fetched.")
+        self.database.closeConnection()  
         return periods
