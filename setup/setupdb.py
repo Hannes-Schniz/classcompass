@@ -15,7 +15,7 @@ def get_sql_dir():
     """Get SQL files directory from environment variable or use default."""
     sql_dir = os.environ.get(SQLDIRVAR, '').strip()
     if not sql_dir:
-        sql_dir = "sql"  # Default fallback
+        sql_dir = "setup/sql"  # Default fallback
     
     if not os.path.exists(sql_dir):
         print(f"[ERR] SQL directory not found: {sql_dir}")
@@ -28,7 +28,6 @@ def get_db_path():
     db_path = os.environ.get(DBPATHVAR, '').strip()
     if not db_path:
         db_path = DBPATHDEF  # Default fallback
-    
     # Ensure the directory exists if it's a full path
     db_dir = os.path.dirname(db_path)
     if db_dir and not os.path.exists(db_dir):
