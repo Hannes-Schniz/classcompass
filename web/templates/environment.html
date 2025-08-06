@@ -1,0 +1,288 @@
+{% extends "base.html" %} {% block title %}Environment - ClassCompass
+Management{% endblock %} {% block content %}
+<div class="page-header">
+  <h1>Environment Configuration</h1>
+  <p>Manage external service connections and credentials</p>
+</div>
+
+<div class="alert alert-info">
+  <strong>⚠️ Security Notice:</strong> This page contains sensitive information
+  like API tokens. Make sure you're in a secure environment.
+</div>
+
+<div class="card">
+  <div class="card-header">🌐 Environment Settings</div>
+  <div class="card-body">
+    <form id="environmentForm">
+      <div
+        class="card"
+        style="margin: 1rem 0; border: 1px solid var(--border-color)">
+        <div class="card-header" style="background: var(--success-color)">
+          📅 Google Calendar Configuration
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="calendarID">Calendar ID:</label>
+            <input
+              type="text"
+              id="calendarID"
+              name="calendarID"
+              class="form-control"
+              value="{{ environment.calendarID }}" />
+            <div class="help-text">Google Calendar ID for syncing events</div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="card"
+        style="margin: 1rem 0; border: 1px solid var(--border-color)">
+        <div
+          class="card-header"
+          style="background: var(--warning-color); color: var(--dark-color)">
+          🏫 School System Configuration
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="anonymousSchool">Anonymous School:</label>
+            <input
+              type="text"
+              id="anonymousSchool"
+              name="anonymousSchool"
+              class="form-control"
+              value="{{ environment['anonymous-school'] }}" />
+            <div class="help-text">School identifier for WebUntis</div>
+          </div>
+
+          <div class="form-group">
+            <label for="cookie">Session Cookie:</label>
+            <textarea id="cookie" name="cookie" class="form-control" rows="3">
+{{ environment.cookie }}</textarea
+            >
+            <div class="help-text">
+              Authentication cookie for WebUntis access
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="card"
+        style="margin: 1rem 0; border: 1px solid var(--border-color)">
+        <div class="card-header" style="background: var(--info-color)">
+          📱 Telegram Bot Configuration
+        </div>
+        <div class="card-body">
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label for="telegramToken">Bot Token:</label>
+              <input
+                type="password"
+                id="telegramToken"
+                name="telegramToken"
+                class="form-control"
+                value="{{ environment.telegramToken }}" />
+              <div class="help-text">Telegram bot token from @BotFather</div>
+            </div>
+
+            <div class="form-group">
+              <label for="telegramChat">Chat ID:</label>
+              <input
+                type="text"
+                id="telegramChat"
+                name="telegramChat"
+                class="form-control"
+                value="{{ environment.telegramChat }}" />
+              <div class="help-text">Telegram chat ID for notifications</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem">
+        <button type="submit" class="btn btn-primary">
+          💾 Save Environment
+        </button>
+        <button type="button" id="previewBtn" class="btn btn-secondary">
+          👁️ Preview JSON
+        </button>
+        <button type="button" id="testConnectionsBtn" class="btn btn-info">
+          🔌 Test Connections
+        </button>
+        <a
+          href="{{ url_for('reset_environment') }}"
+          class="btn btn-danger"
+          onclick="return confirm('Are you sure you want to reset environment settings?')"
+          >🔄 Reset Environment</a
+        >
+      </div>
+    </form>
+
+    <div
+      id="jsonPreview"
+      class="json-preview"
+      style="display: none; margin-top: 2rem">
+      <strong>JSON Preview:</strong>
+      <pre id="jsonContent"></pre>
+    </div>
+
+    <div id="connectionResults" style="margin-top: 2rem; display: none">
+      <div class="card">
+        <div class="card-header">🔌 Connection Test Results</div>
+        <div class="card-body">
+          <div id="testResults"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">📋 Setup Instructions</div>
+  <div class="card-body">
+    <div class="grid grid-2">
+      <div>
+        <h4>📅 Google Calendar Setup</h4>
+        <ol>
+          <li>Create a Google Cloud Project</li>
+          <li>Enable the Google Calendar API</li>
+          <li>Create a service account and download credentials.json</li>
+          <li>Share your calendar with the service account email</li>
+          <li>Copy the calendar ID from Google Calendar settings</li>
+        </ol>
+      </div>
+      <div>
+        <h4>📱 Telegram Bot Setup</h4>
+        <ol>
+          <li>Create a bot using @BotFather on Telegram</li>
+          <li>Copy the bot token</li>
+          <li>Add the bot to your chat/group</li>
+          <li>Send a message and get the chat ID using the bot API</li>
+          <li>Test notifications with the bot</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('environmentForm');
+    const previewBtn = document.getElementById('previewBtn');
+    const testConnectionsBtn = document.getElementById('testConnectionsBtn');
+    const jsonPreview = document.getElementById('jsonPreview');
+    const jsonContent = document.getElementById('jsonContent');
+    const connectionResults = document.getElementById('connectionResults');
+    const testResults = document.getElementById('testResults');
+
+    function getFormData() {
+      return {
+        calendarID: document.getElementById('calendarID').value,
+        'anonymous-school': document.getElementById('anonymousSchool').value,
+        cookie: document.getElementById('cookie').value,
+        telegramToken: document.getElementById('telegramToken').value,
+        telegramChat: document.getElementById('telegramChat').value,
+      };
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const environment = getFormData();
+
+      fetch('/api/environment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(environment),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            showAlert(
+              'Environment configuration saved successfully! ✅',
+              'success'
+            );
+          } else {
+            showAlert('Error: ' + (data.error || 'Unknown error'), 'error');
+          }
+        })
+        .catch((error) => {
+          showAlert('Error saving environment: ' + error.message, 'error');
+        });
+    });
+
+    previewBtn.addEventListener('click', function () {
+      const environment = getFormData();
+      // Hide sensitive information in preview
+      const previewEnv = {...environment};
+      if (previewEnv.telegramToken) {
+        previewEnv.telegramToken = previewEnv.telegramToken.replace(/./g, '*');
+      }
+      if (previewEnv.cookie) {
+        previewEnv.cookie = previewEnv.cookie.substring(0, 20) + '...';
+      }
+
+      jsonContent.textContent = JSON.stringify(previewEnv, null, 2);
+
+      if (jsonPreview.style.display === 'none') {
+        jsonPreview.style.display = 'block';
+        previewBtn.textContent = '❌ Hide JSON';
+      } else {
+        jsonPreview.style.display = 'none';
+        previewBtn.textContent = '👁️ Preview JSON';
+      }
+    });
+
+    testConnectionsBtn.addEventListener('click', function () {
+      const environment = getFormData();
+      testResults.innerHTML =
+        '<div class="loading">Testing connections...</div>';
+      connectionResults.style.display = 'block';
+
+      // Simple connection tests
+      let results = '<div class="grid grid-3">';
+
+      // Calendar test
+      results += '<div>';
+      results += '<h5>📅 Calendar</h5>';
+      if (environment.calendarID) {
+        results +=
+          '<span style="color: var(--success-color);">🟢 Calendar ID configured</span>';
+      } else {
+        results +=
+          '<span style="color: var(--danger-color);">🔴 Calendar ID missing</span>';
+      }
+      results += '</div>';
+
+      // School system test
+      results += '<div>';
+      results += '<h5>🏫 School System</h5>';
+      if (environment['anonymous-school'] && environment.cookie) {
+        results +=
+          '<span style="color: var(--success-color);">🟢 Credentials configured</span>';
+      } else {
+        results +=
+          '<span style="color: var(--danger-color);">🔴 Missing credentials</span>';
+      }
+      results += '</div>';
+
+      // Telegram test
+      results += '<div>';
+      results += '<h5>📱 Telegram</h5>';
+      if (environment.telegramToken && environment.telegramChat) {
+        results +=
+          '<span style="color: var(--success-color);">🟢 Bot configured</span>';
+      } else {
+        results +=
+          '<span style="color: var(--danger-color);">🔴 Bot not configured</span>';
+      }
+      results += '</div>';
+
+      results += '</div>';
+      testResults.innerHTML = results;
+    });
+  });
+</script>
+{% endblock %}
