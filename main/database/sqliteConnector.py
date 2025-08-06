@@ -24,7 +24,7 @@ class plutus:
         
     def getNewBatchID(self):
         close = False
-        if None == self.conn:
+        if self.conn is None:
             self.connect()
             close = True
         currentBatchID = self.cur.execute("select max(batchID) from classes").fetchone()[0]
