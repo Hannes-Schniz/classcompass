@@ -160,7 +160,7 @@ endblock %} {% block content %}
     <div class="grid grid-4">
       <div
         class="stat-card"
-        style="background: linear-gradient(135deg, #{{ '%02d' % (config['color-scheme'].primary | int) }}{{ '%02d' % (config['color-scheme'].primary | int) }}{{ '%02d' % (config['color-scheme'].primary | int) }}, #{{ '%02d' % ((config['color-scheme'].primary | int) - 20) }}{{ '%02d' % ((config['color-scheme'].primary | int) - 20) }}{{ '%02d' % ((config['color-scheme'].primary | int) - 20) }});">
+        style="background: linear-gradient(135deg, {{ calendar_color_map.get(config['color-scheme'].primary, calendar_color_map['default']) }}, {{ calendar_color_map.get(config['color-scheme'].primary, calendar_color_map['default']) }});">
         <div class="number">{{ config['color-scheme'].primary }}</div>
         <div class="label">Primary</div>
       </div>
