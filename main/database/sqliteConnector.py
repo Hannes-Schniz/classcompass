@@ -22,12 +22,12 @@ class plutus:
         self.conn.commit()
         self.conn.close()
         
-    def getNewBatchID(self):
+    def getNewBatchID(self, table):
         close = False
         if self.conn is None:
             self.connect()
             close = True
-        currentBatchID = self.cur.execute("select max(batchID) from classes").fetchone()[0]
+        currentBatchID = self.cur.execute(f"select max(batchID) from {table}").fetchone()[0]
         if  currentBatchID == None:
             currentBatchID = 0
         if close:
