@@ -67,9 +67,9 @@ class exporter:
                     if entry['position2'][0]['removed'] != None:
                         changedRoom= changes.append(entry['position2'][0]['removed']['shortName'])
                 
-                periods.append([date,start, end, classType, status, stateDetail, room, shortName, subText])
+                periods.append({'date': date,'startTime': start, 'endTime':end,'type': classType, 'state': status,'stateDetail': stateDetail,'room': room, 'subject': shortName,'substituteText': subText})
                 if status != "REGULAR":
-                    diffs.append([oldStart, start, oldEnd, end, status, "", stateDetail, "", changedRoom, room, changedClass, shortName, subText, ""])
+                    diffs.append({'oldDate': "", 'newDate': date, 'oldStart':oldStart, 'newStart': start, 'oldEnd': oldEnd, 'newEnd': end, 'newState': status,'oldState': "", 'newStateDetail': stateDetail, 'oldStateDetail': "", 'oldRoom': changedRoom, 'newRoom': room, 'oldSubject': changedClass, 'newSubject': shortName, 'newText': subText, 'oldText': ""})
                 
         if verbose:
             print(f"[VERBOSE] {len(periods)} fetched.")

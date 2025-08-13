@@ -14,6 +14,10 @@ class plutus:
         insert = f"INSERT INTO classes (batchID, date, startTime, endTime, type, state, stateDetail, room, subject, substituteText) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         self.cur.execute(insert, (batchID, date, startTime, endTime, type, state, stateDetail, room, subject, substituteText))
     
+    def addDiff(self, batchID, oldDate, newDate, oldStart, newStart, oldEnd, newEnd, oldState, newState, oldStateDetail, newStateDetail, oldRoom, newRoom, oldSubject, newSubject, oldText, newText):
+        insert = f"INSERT INTO diff (batchID, oldDate, newDate, oldStart, newStart, oldEnd, newEnd, oldState, newState, oldStateDetail, newStateDetail, oldRoom, newRoom, oldSubject, newSubject, oldText, newText) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        self.cur.execute(insert, (batchID, oldDate, newDate, oldStart, newStart, oldEnd, newEnd, oldState, newState, oldStateDetail, newStateDetail, oldRoom, newRoom, oldSubject, newSubject, oldText, newText))
+    
     def connect(self):
         self.conn = sqlite3.connect(os.environ['DB_PATH'])
         self.cur = self.conn.cursor()

@@ -1,19 +1,17 @@
-from schedule.untis_connector import exporter
+from schedule.untisDataHandler import handler
 from configReader import configExtract
+from datetime import datetime, timedelta, timezone
 import os
 
-untis_exporter = exporter()
-
 conf = configExtract("config.json").conf
+dataHandler = handler() 
 
-MINUTECOUNTERVAR = "athena_counter"
-
-minute = os.environ[MINUTECOUNTERVAR]
-
-if minute > 0: 
-    os.environ[MINUTECOUNTERVAR] = minute - 1
-    quit(0)
-
-os.environ[MINUTECOUNTERVAR] = conf['weeksAhead']
-
-untisData = untis_exporter.getData(start="2025-07-21", end="2025-07-25", classID=conf['classID'], verbose=True)
+for i in range(int(conf['weeksAhead'])):
+    currDate = (datetime.now(timezone.utc) + timedelta(days=i*7) ).strftime('%Y-%m-%d')
+    dt = datetime.strptime(currDate, '%Y-%m-%d')
+    start = dt - timedelta(days=dt.weekday())
+    end = (start + timedelta(days=5)).strftime('%Y-%m-%d')
+    start = start.strftime('%Y-%m-%d')
+    dataHandler.getData(start=start, end=end, classID=conf['classID'])
+    
+dataHandler.sendData()
