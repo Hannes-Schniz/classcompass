@@ -28,6 +28,9 @@ class exporter:
         
         try:
             response = requests.get(self.urlRest + optionsRest, headers=self.headers)
+            if response.status_code != 200:
+                print(f"Error fetching Data from API {response.status_code} Reason: {response.reason}")
+                quit(1)
             raw_data = response.json()
         except:
             raise Exception("Failed to retrieve Untis data correctly")

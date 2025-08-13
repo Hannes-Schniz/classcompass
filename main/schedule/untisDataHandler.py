@@ -11,17 +11,17 @@ class handler:
         untis_exporter = exporter()
 
         untisData = untis_exporter.getData(start=start, end=end, classID=classID, verbose=True)
-        self.diffs = untisData[1]
-        self.classes = untisData[0]
+        self.diffs += untisData[1]
+        self.classes += untisData[0]
         
     def sendData(self):
         database = plutus()
         database.connect()
         
         try:
+            batchID = database.getNewBatchID("classes")
             # Process and insert classes data
             if self.classes is not None:
-                batchID = database.getNewBatchID("classes")
                 for item in self.classes:
                     database.addClass(
                         batchID=batchID,
@@ -39,7 +39,6 @@ class handler:
             
             # Process and insert diffs data
             if self.diffs is not None:
-                batchID = database.getNewBatchID("diff")
                 for item in self.diffs:
                     database.addDiff(
                         batchID=batchID,
