@@ -1,4 +1,4 @@
-from untis_connector import exporter
+from schedule.untis_connector import exporter
 from database.sqliteConnector import plutus
 
 class handler:
