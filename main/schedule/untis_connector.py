@@ -1,6 +1,5 @@
 import requests
 from configReader import configExtract
-from database.sqliteConnector import plutus
 
 class exporter:
     
@@ -14,8 +13,6 @@ class exporter:
     'anonymous-school': conf['anonymous-school'],
     'cookie': conf['cookie']
     }
-
-    database = plutus()
     
     def getElementMap(self, elements):
         elementMap = {}
@@ -37,15 +34,13 @@ class exporter:
         
         
         periods = []
-        self.database.connect()
-        batchID = self.database.getNewBatchID()
-        print(batchID)
+        diffs = []
         for day in raw_data['days']:
             date = day['date']
             for entry in day['gridEntries']:
                 status = entry['status']
+                stateDetail = entry['statusDetail']
                 classType = entry['type']
-                moved = False
                 oldStart = None
                 oldEnd = None
                 changes = None
@@ -54,16 +49,13 @@ class exporter:
                 subText=entry['substitutionText']
                 if subText == None:
                     subText= ""
-                
                 start = entry['duration']['start']
                 end = entry['duration']['end']
                 if entry['position1']:
                     shortName = entry['position1'][0]['current']['shortName']
-                    longName = entry['position1'][0]['current']['longName']
                 if entry['position2']:
                     room = entry['position2'][0]['current']['displayName']
                 if entry['statusDetail'] == "MOVED":
-                    moved = True
                     oldStart = start
                     oldEnd = end
                     start = entry['moved']['start']
@@ -75,26 +67,10 @@ class exporter:
                     if entry['position2'][0]['removed'] != None:
                         changedRoom= changes.append(entry['position2'][0]['removed']['shortName'])
                 
-                self.database.addClass(date,start, end, classType, status, "", room, shortName, subText, batchID)
+                periods.append([date,start, end, classType, status, stateDetail, room, shortName, subText])
+                if status != "REGULAR":
+                    diffs.append([oldStart, start, oldEnd, end, status, "", stateDetail, "", changedRoom, room, changedClass, shortName, subText, ""])
                 
-                
-                #periods.append({'name':shortName, 
-                #                  'location': room,
-                #                  'periodText': longName,
-                #                  'cellState': status,
-                #                  'date':date,
-                #                  'start':start,
-                #                  'end':end,
-                #                  'type': classType,
-                #                  'movedStart': oldStart,
-                #                  'movedEnd': oldEnd,
-                #                  'changedRoom': changedRoom,
-                #                  'changedClass': changedClass,
-                #                  'moved': moved})
-                #if verbose:
-                #    if entry['statusDetail'] == "MOVED":
-                #        print(f"[VERBOSE] period: {periods[-1]}") 
         if verbose:
             print(f"[VERBOSE] {len(periods)} fetched.")
-        self.database.closeConnection()  
-        return periods
+        return [periods, diffs]
