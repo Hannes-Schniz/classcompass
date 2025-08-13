@@ -16,6 +16,13 @@ ARG DB_PATH="/home/navigator/classcompass/maps.db"
 ENV DB_PATH=${DB_PATH}
 ARG SQL_DIR
 
+# Web server configuration
+ENV FLASK_APP=config_editor.py
+ENV FLASK_ENV=production
+ENV FLASK_HOST=0.0.0.0
+ENV FLASK_PORT=5001
+EXPOSE 5001
+
 # Virtual environment and source code paths
 ENV VENV="/opt/venv/bin/activate"
 ENV SOURCE="/home/navigator/classcompass"
@@ -36,12 +43,24 @@ RUN apt install cron -y
 RUN useradd -ms /bin/bash navigator
 
 # Set up cron job to run the application handler every minute
-RUN echo "* * * * * bash /home/navigator/classcompass/exec.sh" >> /var/spool/cron/crontabs/navigator
+RUN echo "VENV=/opt/venv/bin/activate" > /var/spool/cron/crontabs/navigator && \
+    echo "SOURCE=/home/navigator/classcompass" >> /var/spool/cron/crontabs/navigator && \
+    echo "DB_PATH=/home/navigator/classcompass/maps.db" >> /var/spool/cron/crontabs/navigator && \
+    echo "* * * * * bash /home/navigator/classcompass/exec.sh >> /var/log/classcompass-cron.log 2>&1" >> /var/spool/cron/crontabs/navigator
+RUN chmod 600 /var/spool/cron/crontabs/navigator
+RUN chown navigator:crontab /var/spool/cron/crontabs/navigator
 
 WORKDIR /home/navigator
 
 # Clone the repository as the navigator user (non-root for security)
 USER navigator
+
+# Set environment variables for navigator user
+RUN echo 'export VENV="/opt/venv/bin/activate"' >> /home/navigator/.bashrc
+RUN echo 'export SOURCE="/home/navigator/classcompass"' >> /home/navigator/.bashrc
+RUN echo "export DB_PATH=${DB_PATH}" >> /home/navigator/.bashrc
+RUN echo "cd $SOURCE" >> /home/navigator/.bashrc 
+
 RUN git clone https://github.com/Hannes-Schniz/classcompass.git
 
 USER root
@@ -51,11 +70,42 @@ USER root
 RUN python3 -m venv /opt/venv
 RUN . /opt/venv/bin/activate && pip install -r /home/navigator/classcompass/setup/requirements.txt
 
-RUN bash classcompass/setup.sh > /tmp/setup.log
+RUN bash classcompass/setup.sh > /var/log/setup.log
 
 # Configure the navigator user's shell to automatically activate the virtual environment
 # This ensures Python dependencies are available when the user logs in
 RUN echo "source /opt/venv/bin/activate" >> /home/navigator/.bashrc
 
-CMD [ "/bin/bash" ]
+# Create startup script to run both cron and web server
+RUN echo '#!/bin/bash' > /start.sh && \
+    echo 'echo "Starting ClassCompass services..."' >> /start.sh && \
+    echo 'service cron start' >> /start.sh && \
+    echo 'echo "Cron service started"' >> /start.sh && \
+    echo '# Ensure crontab is loaded for navigator user' >> /start.sh && \
+    echo 'crontab -u navigator /var/spool/cron/crontabs/navigator' >> /start.sh && \
+    echo 'echo "Crontab activated for navigator user"' >> /start.sh && \
+    echo 'cd /home/navigator/classcompass' >> /start.sh && \
+    echo 'source /opt/venv/bin/activate' >> /start.sh && \
+    echo 'echo "Starting web server on port 5001..."' >> /start.sh && \
+    echo 'touch /var/log/webserver.log' >> /start.sh && \
+    echo 'touch /var/log/classcompass-cron.log' >> /start.sh && \
+    echo 'chown navigator:navigator /var/log/classcompass-cron.log' >> /start.sh && \
+    echo 'nohup python3 web/app.py > /var/log/webserver.log 2>&1 &' >> /start.sh && \
+    echo 'echo "Web server started in background"' >> /start.sh && \
+    echo 'echo "ClassCompass is ready!"' >> /start.sh && \
+    echo 'echo "Access web interface at: http://localhost:5001"' >> /start.sh && \
+    echo 'echo "Logs available at:"' >> /start.sh && \
+    echo 'echo "  Web Server: /var/log/webserver.log"' >> /start.sh && \
+    echo 'echo "  Cron Jobs:  /var/log/classcompass-cron.log"' >> /start.sh && \
+    echo 'echo "  System:     /var/log/syslog (for cron daemon)"' >> /start.sh && \
+    echo 'echo ""' >> /start.sh && \
+    echo 'echo "Test cron job with: crontab -l -u navigator"' >> /start.sh && \
+    echo 'echo "Container will keep running... Press Ctrl+C to stop"' >> /start.sh && \
+    echo 'sleep 2' >> /start.sh && \
+    echo 'tail -f /var/log/webserver.log' >> /start.sh && \
+    chmod +x /start.sh
+
+RUN chown -R navigator:navigator classcompass/
+
+CMD [ "/start.sh" ]
 

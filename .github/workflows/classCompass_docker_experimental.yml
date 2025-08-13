@@ -3,7 +3,7 @@ name: Publish Docker image
 on:
   push:
     branches:
-      - main
+      - deploy_experimental
 
 jobs:
   push_to_registry:
@@ -37,7 +37,8 @@ jobs:
           context: .
           file: ./setup/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            hannesschniz/classcompass:experimental
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
