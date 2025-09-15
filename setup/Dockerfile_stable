@@ -61,7 +61,7 @@ RUN echo 'export SOURCE="/home/navigator/classcompass"' >> /home/navigator/.bash
 RUN echo "export DB_PATH=${DB_PATH}" >> /home/navigator/.bashrc
 RUN echo "cd $SOURCE" >> /home/navigator/.bashrc 
 
-RUN git clone https://github.com/Hannes-Schniz/classcompass.git
+RUN git clone -b deploy_stable https://github.com/Hannes-Schniz/classcompass.git
 
 USER root
 
