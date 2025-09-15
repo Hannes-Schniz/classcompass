@@ -58,7 +58,8 @@ class plutus:
                 'state': row[5],
                 'stateDetail' : row[6],
                 'room': row[7],
-                'substituteText': row[8]
+                'name': row[8],
+                'substituteText': row[9]
             })
         
         return resultList
