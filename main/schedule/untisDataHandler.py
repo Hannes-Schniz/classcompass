@@ -1,7 +1,7 @@
 from schedule.untis_connector import exporter
 from database.sqliteConnector import plutus
 
-class handler:
+class api:
 
     diffs=None
     classes=None

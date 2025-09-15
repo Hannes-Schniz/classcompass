@@ -1,7 +1,7 @@
 from google_cal_connector import googleCalCon
 from database.sqliteConnector import plutus
 
-class handler():
+class calendar:
     
     classes=None
     diffs=None

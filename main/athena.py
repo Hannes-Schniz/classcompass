@@ -1,10 +1,12 @@
-from schedule.untisDataHandler import handler
+from schedule.untisDataHandler import api
+from calendar.calendarDataHandler import calendar
 from configReader import configExtract
 from datetime import datetime, timedelta, timezone
 import os
 
 conf = configExtract("config.json").conf
-dataHandler = handler() 
+dataHandler = api() 
+calendarHandler = calendar()
 
 for i in range(int(conf['weeksAhead'])):
     currDate = (datetime.now(timezone.utc) + timedelta(days=i*7) ).strftime('%Y-%m-%d')
@@ -15,3 +17,5 @@ for i in range(int(conf['weeksAhead'])):
     dataHandler.getData(start=start, end=end, classID=conf['classID'])
     
 dataHandler.sendData()
+
+
