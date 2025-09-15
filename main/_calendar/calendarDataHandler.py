@@ -1,5 +1,5 @@
 from google_cal_connector import googleCalCon
-from database.sqliteConnector import plutus
+from _database.sqliteConnector import plutus
 
 class calendarHandler:
     

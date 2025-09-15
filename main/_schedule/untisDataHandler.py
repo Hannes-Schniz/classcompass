@@ -1,5 +1,5 @@
-from schedule.untis_connector import exporter
-from database.sqliteConnector import plutus
+from _schedule.untis_connector import exporter
+from _database.sqliteConnector import plutus
 
 class apiHandler:
 

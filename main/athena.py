@@ -1,5 +1,5 @@
-from schedule.untisDataHandler import apiHandler
-from calendar.calendarDataHandler import calendarHandler
+from _schedule.untisDataHandler import apiHandler
+from _calendar.calendarDataHandler import calendarHandler
 from configReader import configExtract
 from datetime import datetime, timedelta, timezone
 import os
