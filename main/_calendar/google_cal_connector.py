@@ -7,7 +7,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from configReader import configExtract
 import pytz
-import main.alert.telegramBot as telegramBot
+#import _alert.telegramBot as telegramBot
 import re
 
 class googleCalCon:
@@ -92,17 +92,17 @@ class googleCalCon:
             'colorId': background
         }
      
-    def sendMessage(self, state, summary, location, description, start, end, simulate=False, verbose=False):
-        if state.strip() == 'EXAM':
-            summary = state + " " + summary
-        message = telegramBot.createText(summary, location, description, start.split('T')[0], start.split('T')[1], end.split('T')[1])
-        if state.strip() in ['CHANGED', 'ADDITIONAL', 'CANCELLED', 'EXAM']:
-            if simulate:
-                print(f"[SIMULATION] Would send Telegram message:\n{message}\n{'-'*40}")
-            else:
-                if verbose:
-                    print(f"[VERBOSE] Sending Telegram message:\n{message}\n{'-'*40}")
-                telegramBot.sendMessage(message=message)
+    #def sendMessage(self, state, summary, location, description, start, end, simulate=False, verbose=False):
+    #    if state.strip() == 'EXAM':
+    #        summary = state + " " + summary
+    #    message = telegramBot.createText(summary, location, description, start.split('T')[0], start.split('T')[1], end.split('T')[1])
+    #    if state.strip() in ['CHANGED', 'ADDITIONAL', 'CANCELLED', 'EXAM']:
+    #        if simulate:
+    #            print(f"[SIMULATION] Would send Telegram message:\n{message}\n{'-'*40}")
+    #        else:
+    #            if verbose:
+    #                print(f"[VERBOSE] Sending Telegram message:\n{message}\n{'-'*40}")
+    #            telegramBot.sendMessage(message=message)
     
     
     def getEntries(self, weeks):

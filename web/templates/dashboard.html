@@ -153,41 +153,6 @@ endblock %} {% block content %}
     {% endif %}
   </div>
 </div>
-
-<div class="card">
-  <div class="card-header">📈 Color Scheme Preview</div>
-  <div class="card-body">
-    <div class="grid grid-4">
-      <div
-        class="stat-card"
-        style="background: linear-gradient(135deg, {{ calendar_color_map.get(config['color-scheme'].primary, calendar_color_map['default']) }}, {{ calendar_color_map.get(config['color-scheme'].primary, calendar_color_map['default']) }});">
-        <div class="number">{{ config['color-scheme'].primary }}</div>
-        <div class="label">Primary</div>
-      </div>
-
-      <div
-        class="stat-card"
-        style="background: linear-gradient(135deg, #dc3545, #c82333)">
-        <div class="number">{{ config['color-scheme'].cancelled }}</div>
-        <div class="label">Cancelled</div>
-      </div>
-
-      <div
-        class="stat-card"
-        style="background: linear-gradient(135deg, #ffc107, #e0a800)">
-        <div class="number">{{ config['color-scheme'].changed }}</div>
-        <div class="label">Changed</div>
-      </div>
-
-      <div
-        class="stat-card"
-        style="background: linear-gradient(135deg, #17a2b8, #138496)">
-        <div class="number">{{ config['color-scheme'].exam }}</div>
-        <div class="label">Exam</div>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %} {% block scripts %}
 <script>
   function refreshStats() {
