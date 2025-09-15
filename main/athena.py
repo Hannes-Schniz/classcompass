@@ -18,4 +18,4 @@ for i in range(int(conf['weeksAhead'])):
     
 dataHandler.sendData()
 
-
+calendarHandler.getData()
