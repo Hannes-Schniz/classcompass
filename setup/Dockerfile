@@ -107,5 +107,5 @@ RUN echo '#!/bin/bash' > /start.sh && \
 
 RUN chown -R navigator:navigator classcompass/
 
-CMD [ "bash", " /start.sh" ]
+CMD [ "/start.sh" ]
 
