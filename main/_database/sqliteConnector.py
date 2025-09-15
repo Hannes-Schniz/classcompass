@@ -50,7 +50,16 @@ class plutus:
         resultList = []
         
         for row in result:
-            resultList.append(dict(zip(row.keys(), row)))
+            resultList.append({
+                'date': row[1],
+                'startTime': row[2],
+                'endTime': row[3],
+                'type': row[4],
+                'state': row[5],
+                'stateDetail' : row[6],
+                'room': row[7],
+                'substituteText': row[8]
+            })
         
         return resultList
     
