@@ -6,7 +6,7 @@ import os
 
 conf = configExtract("config.json").conf
 dataHandler = apiHandler() 
-calendarHandler = calendarHandler()
+calendar = calendarHandler()
 
 for i in range(int(conf['weeksAhead'])):
     currDate = (datetime.now(timezone.utc) + timedelta(days=i*7) ).strftime('%Y-%m-%d')
@@ -18,4 +18,4 @@ for i in range(int(conf['weeksAhead'])):
     
 dataHandler.sendData()
 
-calendarHandler.getData()
+calendar.getData()
