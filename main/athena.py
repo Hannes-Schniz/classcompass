@@ -1,12 +1,12 @@
-from schedule.untisDataHandler import api
-from calendar.calendarDataHandler import calendar
+from schedule.untisDataHandler import apiHandler
+from calendar.calendarDataHandler import calendarHandler
 from configReader import configExtract
 from datetime import datetime, timedelta, timezone
 import os
 
 conf = configExtract("config.json").conf
-dataHandler = api() 
-calendarHandler = calendar()
+dataHandler = apiHandler() 
+calendarHandler = calendarHandler()
 
 for i in range(int(conf['weeksAhead'])):
     currDate = (datetime.now(timezone.utc) + timedelta(days=i*7) ).strftime('%Y-%m-%d')
