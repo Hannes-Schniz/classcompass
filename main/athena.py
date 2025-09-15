@@ -6,7 +6,7 @@ import os
 
 conf = configExtract("config.json").conf
 dataHandler = apiHandler() 
-calendar = calendarHandler()
+calendar = calendarHandler(int(conf['weeksAhead']))
 
 for i in range(int(conf['weeksAhead'])):
     currDate = (datetime.now(timezone.utc) + timedelta(days=i*7) ).strftime('%Y-%m-%d')
@@ -19,3 +19,5 @@ for i in range(int(conf['weeksAhead'])):
 dataHandler.sendData()
 
 calendar.getData()
+
+calendar.sendData(conf['color-scheme'])
