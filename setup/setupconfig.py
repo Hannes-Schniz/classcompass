@@ -95,18 +95,54 @@ def create_config():
     
     return config
 
+def create_env():
+    env = {
+      "calendarID": "",
+      "cookie": "",
+      "anonymous-school": "",
+      "telegramToken": "",
+      "telegramChat": ""
+    }
+    return env
+
+def create_creds():
+    creds = {
+      "type": "",
+      "project_id": "",
+      "private_key_id": "",
+      "private_key": "",
+      "client_email": "",
+      "client_id": "",
+      "auth_uri": "",
+      "token_uri": "",
+      "auth_provider_x509_cert_url": "",
+      "client_x509_cert_url": "",
+      "universe_domain": ""
+    }
+    return creds
+
 
 def main():
     """Main function to generate config.json file."""
     try:
         # Create config dictionary
         config = create_config()
+        creds = create_creds()
+        envs = create_env()
         
         # Write to config.json file
         config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.json')
+        creds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'credentials.json')
+        envs_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'environment.json')
         
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
+            
+        with open(creds_path, 'w', encoding='utf-8') as f:
+            json.dump(creds, f, indent=2, ensure_ascii=False)
+            
+        with open(envs_path, 'w', encoding='utf-8') as f:
+            json.dump(envs, f, indent=2, ensure_ascii=False)
         
         print(f"[INF] Config file created successfully at: {config_path}")
         print("[INF] Configuration:")

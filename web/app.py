@@ -45,6 +45,8 @@ DEFAULT_ENVIRONMENT = {
     "telegramChat": ""
 }
 
+CREDENTIALS_PATH = os.path.join(os.path.dirname(__file__), '../credentials.json')
+
 # Utility Functions
 def load_config():
     """Load config from file or create with defaults if it doesn't exist."""
@@ -157,6 +159,7 @@ def get_database_stats():
     except Exception as e:
         return {"error": str(e)}
 
+import time
 # Routes
 @app.route('/')
 def index():
@@ -370,13 +373,78 @@ def reset_environment():
         flash('Error resetting environment configuration!', 'error')
     return redirect(url_for('environment_page'))
 
+
+# Credentials editor route
+@app.route('/edit-credentials', methods=['GET', 'POST'])
+def edit_credentials():
+    # Read current credentials
+    try:
+        with open(CREDENTIALS_PATH, 'r', encoding='utf-8') as f:
+            creds = json.load(f)
+    except FileNotFoundError:
+        creds = {
+            "type": "", "project_id": "", "private_key_id": "",
+            "private_key": "", "client_email": "", "client_id": "",
+            "auth_uri": "", "token_uri": "",
+            "auth_provider_x509_cert_url": "",
+            "client_x509_cert_url": "", "universe_domain": ""
+        }
+    except json.JSONDecodeError:
+        flash("Error: credentials.json is malformed", "danger")
+        creds = {
+            "type": "", "project_id": "", "private_key_id": "",
+            "private_key": "", "client_email": "", "client_id": "",
+            "auth_uri": "", "token_uri": "",
+            "auth_provider_x509_cert_url": "",
+            "client_x509_cert_url": "", "universe_domain": ""
+        }
+
+    if request.method == 'POST':
+        # Extract form fields
+        fields = [
+            "type", "project_id", "private_key_id", "private_key",
+            "client_email", "client_id", "auth_uri", "token_uri",
+            "auth_provider_x509_cert_url", "client_x509_cert_url", "universe_domain"
+        ]
+        new_creds = {}
+        for field in fields:
+            val = request.form.get(field, '').strip()
+            new_creds[field] = val
+
+        # Validate non-empty for required fields
+        missing = [f for f in fields if new_creds[f] == ""]
+        if missing:
+            flash(f"Fields missing: {', '.join(missing)}", "warning")
+            return render_template('edit_credentials.html', creds=new_creds)
+
+        # Backup old credentials
+        backup_path = CREDENTIALS_PATH + '.bak.' + str(int(time.time()))
+        try:
+            if os.path.exists(CREDENTIALS_PATH):
+                os.replace(CREDENTIALS_PATH, backup_path)
+        except Exception as e:
+            app.logger.warning(f"Could not backup credentials: {e}")
+
+        # Write new credentials
+        try:
+            with open(CREDENTIALS_PATH, 'w', encoding='utf-8') as f:
+                json.dump(new_creds, f, indent=2)
+            flash("Credentials saved successfully.", "success")
+            return redirect(url_for('edit_credentials'))
+        except Exception as e:
+            app.logger.error(f"Error writing credentials.json: {e}")
+            flash("Error saving credentials.", "danger")
+            return render_template('edit_credentials.html', creds=new_creds)
+
+    # GET request
+    return render_template('edit_credentials.html', creds=creds)
+
+
 if __name__ == '__main__':
     # Create templates directory if it doesn't exist
     os.makedirs('templates', exist_ok=True)
-    
     print("Starting ClassCompass Management Web GUI...")
     print("Open http://localhost:5001 in your browser")
     print("Press Ctrl+C to stop the server")
-    
     # Run the Flask app on port 5001 to avoid conflicts
     app.run(host='0.0.0.0', port=5001, debug=True)
