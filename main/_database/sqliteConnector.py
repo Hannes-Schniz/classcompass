@@ -42,8 +42,6 @@ class plutus:
     def getClasses(self, batchID: int):
         select = f"select * from classes where batchID = {batchID} order by date, startTime"
         res = self.cur.execute(select)
-        if res.fetchone() is None:
-            return -1
         
         result = res.fetchall()
         
