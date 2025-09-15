@@ -3,8 +3,8 @@ from _database.sqliteConnector import plutus
 
 class apiHandler:
 
-    diffs=None
-    classes=None
+    diffs=[]
+    classes=[]
     
 
     def getData(self,start, end,classID):
@@ -21,7 +21,7 @@ class apiHandler:
         try:
             batchID = database.getNewBatchID("classes")
             # Process and insert classes data
-            if self.classes is not None:
+            if self.classes is not []:
                 for item in self.classes:
                     database.addClass(
                         batchID=batchID,
@@ -38,7 +38,7 @@ class apiHandler:
                 print(f"Successfully inserted {len(self.classes)} classes with batchID {batchID}")
             
             # Process and insert diffs data
-            if self.diffs is not None:
+            if self.diffs is not []:
                 for item in self.diffs:
                     database.addDiff(
                         batchID=batchID,
