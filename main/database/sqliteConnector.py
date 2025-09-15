@@ -37,5 +37,20 @@ class plutus:
         if close:
             self.closeConnection()
         return currentBatchID+1
+    
+    
+    def getClasses(self, batchID: int):
+        select = f"select * from classes where batchID = {batchID} order by date, startTime"
+        res = self.cur.execute(select)
+        if res.fetchone() is None:
+            return -1
         
+        result = res.fetchall()
+        
+        resultList = []
+        
+        for row in result:
+            resultList.append(dict(zip(row.keys(), row)))
+        
+        return resultList
     
