@@ -1,5 +1,6 @@
 from _schedule.untisDataHandler import apiHandler
 from _calendar.calendarDataHandler import calendarHandler
+import _maintenance.databaseMaint 
 from configReader import configExtract
 from datetime import datetime, timedelta, timezone
 import os
@@ -7,6 +8,7 @@ import os
 conf = configExtract("config.json").conf
 dataHandler = apiHandler() 
 calendar = calendarHandler(int(conf['weeksAhead']))
+database = plutus()
 
 for i in range(int(conf['weeksAhead'])):
     currDate = (datetime.now(timezone.utc) + timedelta(days=i*7) ).strftime('%Y-%m-%d')
@@ -21,3 +23,8 @@ dataHandler.sendData()
 calendar.getData()
 
 calendar.sendData(conf['color-scheme'])
+
+if int(conf['history']) <= 0:
+    print ("[ERR] : History parameter too low")
+    return 0
+databaseMaint.delete(int(conf['history']))

@@ -38,6 +38,22 @@ Management{% endblock %} {% block content %}
         </div>
       </div>
 
+      <div class="form-group">
+          <label for="history">Weeks Ahead:</label>
+          <input
+            type="number"
+            id="history"
+            name="history"
+            class="form-control"
+            value="{{ config.history }}"
+            min="1"
+             />
+          <div class="help-text">
+            How many batches should be stored
+          </div>
+        </div>
+      </div>
+
       <div
         class="card"
         style="margin: 2rem 0; border: 1px solid var(--border-color)">
@@ -216,6 +232,7 @@ Management{% endblock %} {% block content %}
         maintenance: document.getElementById('maintenance').checked,
         showCancelled: document.getElementById('showCancelled').checked,
         showChanges: document.getElementById('showChanges').checked,
+        history: parseInt(document.getElementById('history').value)
       };
     }
 
