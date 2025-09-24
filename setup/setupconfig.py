@@ -7,6 +7,8 @@ If environment variables are not set, default values will be used.
 import os
 import json
 import sys
+from constants import cfgParams, envParams, envFile, credsParams, mapBoolean, logLevel
+
 
 DEFAULTCLASSID=0
 DEFAULTPRIMARY=1
@@ -18,27 +20,6 @@ DEFAULTMAINTENANCE=False
 DEFAULTSHOWCANCELLED=False
 DEFAULTSHOWCHANGES=False
 DEFAULTHISTORY=2016
-ENVCLASSID= "CLASS_ID"
-ENVPRIMARYCOLOR= "COLOR_PRIMARY"
-ENVCANCELLEDCOLOR="COLOR_CANCELLED"
-ENVCHANGEDCOLOR="COLOR_CHANGED"
-ENVEXAMCOLOR="COLOR_EXAM"
-ENVWEEKSAHEAD="WEEKS_AHEAD"
-ENVMAINTENANCE="MAINTENANCE"
-ENVSHOWCANCELLED="SHOW_CANCELLED"
-ENVSHOWCHANGED="SHOW_CHANGES"
-ENVHISTORY="HISTORY_COUNT"
-CFGCLASSID="classID"
-CFGCOLORSCHEME="color-scheme"
-CFGPRIMARYCOLOR="primary"
-CFGCANCELLEDCOLOR="cancelled"
-CFGCHANGEDCOLOR="changed"
-CFGEXAMCOLOR="exam"
-CFGWEEKSAHEAD="weeksAhead"
-CFGMAINTENANCE="maintenance"
-CFGSHOWCANCELLED="showCancelled"
-CFGSHOWCHANGES="showChanges"
-CFGHISTORY="history"
 
 
 def get_env_or_default(env_var, default_value, value_type=str):
@@ -59,14 +40,13 @@ def get_env_or_default(env_var, default_value, value_type=str):
     
     try:
         if value_type == bool:
-            # Handle boolean conversion from string
-            if value.lower() in ('true', '1', 'yes', 'on'):
-                return True
-            elif value.lower() in ('false', '0', 'no', 'off'):
-                return False
-            else:
-                print(f"[WRN] Invalid boolean value '{value}' for {env_var}, using default: {default_value}")
-                return default_value
+            try:
+                return mapBoolean[value.lower()]
+            except:
+                print(f"[{logLevel.WARNING.value}] Invalid boolean value '{value}' for {env_var}, using default: {default_value}")
+                return default_value 
+
+
         elif value_type == int:
             return int(value)
         elif value_type == float:
@@ -74,7 +54,7 @@ def get_env_or_default(env_var, default_value, value_type=str):
         else:
             return value
     except ValueError:
-        print(f"[WRN] Invalid value '{value}' for {env_var}, using default: {default_value}")
+        print(f"[{logLevel.WARNING.value}]] Invalid value '{value}' for {env_var}, using default: {default_value}")
         return default_value
 
 
@@ -83,18 +63,18 @@ def create_config():
     
     # Read environment variables with defaults based on the template
     config = {
-        CFGCLASSID: get_env_or_default(ENVCLASSID, f"{DEFAULTCLASSID}"),
-        CFGCOLORSCHEME: {
-            CFGPRIMARYCOLOR: get_env_or_default(ENVPRIMARYCOLOR, f"{DEFAULTPRIMARY}"),
-            CFGCANCELLEDCOLOR: get_env_or_default(ENVCANCELLEDCOLOR, f"{DEFAULTCANCELLED}"),
-            CFGCHANGEDCOLOR: get_env_or_default(ENVCHANGEDCOLOR, f"{DEFAULTCHANGED}"),
-            CFGEXAMCOLOR: get_env_or_default(ENVEXAMCOLOR, f"{DEFAULTEXAM}")
+        cfgParams.CLASSID.value: get_env_or_default(envParams.CLASSID.value, f"{DEFAULTCLASSID}"),
+        cfgParams.COLORSCHEME.value: {
+            cfgParams.PRIMARYCOLOR.value: get_env_or_default(envParams.PRIMARYCOLOR.value, f"{DEFAULTPRIMARY}"),
+            cfgParams.CANCELLEDCOLOR.value: get_env_or_default(envParams.CANCELLEDCOLOR.value, f"{DEFAULTCANCELLED}"),
+            cfgParams.CHANGEDCOLOR.value: get_env_or_default(envParams.CHANGEDCOLOR.value, f"{DEFAULTCHANGED}"),
+            cfgParams.EXAMCOLOR.value: get_env_or_default(envParams.EXAMCOLOR.value, f"{DEFAULTEXAM}")
         },
-        CFGWEEKSAHEAD: get_env_or_default(ENVWEEKSAHEAD, DEFAULTWEEKSAHEAD, int),
-        CFGMAINTENANCE: get_env_or_default(ENVMAINTENANCE, DEFAULTMAINTENANCE, bool),
-        CFGSHOWCANCELLED: get_env_or_default(ENVSHOWCANCELLED, DEFAULTSHOWCANCELLED, bool),
-        CFGSHOWCHANGES: get_env_or_default(ENVSHOWCHANGED, DEFAULTSHOWCHANGES, bool)
-        CFGHISTORY: get_env_or_default(ENVHISTORY, DEFAULTSHOWCHANGES, bool)
+        cfgParams.WEEKSAHEAD.value: get_env_or_default(envParams.WEEKSAHEAD.value, DEFAULTWEEKSAHEAD, int),
+        cfgParams.MAINTENANCE.value: get_env_or_default(envParams.MAINTENANCE.value, DEFAULTMAINTENANCE, bool),
+        cfgParams.SHOWCANCELLED.value: get_env_or_default(envParams.SHOWCANCELLED.value, DEFAULTSHOWCANCELLED, bool),
+        cfgParams.SHOWCHANGES.value: get_env_or_default(envParams.SHOWCHANGED.value, DEFAULTSHOWCHANGES, bool),
+        cfgParams.HISTORY.value: get_env_or_default(envParams.HISTORY.value, DEFAULTSHOWCHANGES, bool)
         }
     
     return config
@@ -156,16 +136,16 @@ def main():
         # Print environment variables that were used
         print("[INF] Environment variables used:")
         env_vars = [
-            (ENVCLASSID, config[CFGCLASSID]),
-            (ENVPRIMARYCOLOR, config[CFGCOLORSCHEME][CFGPRIMARYCOLOR]),
-            (ENVCANCELLEDCOLOR, config[CFGCOLORSCHEME][CFGCANCELLEDCOLOR]),
-            (ENVCHANGEDCOLOR, config[CFGCOLORSCHEME][CFGCHANGEDCOLOR]),
-            (ENVEXAMCOLOR, config[CFGCOLORSCHEME][CFGEXAMCOLOR]),
-            (ENVWEEKSAHEAD, config[CFGWEEKSAHEAD]),
-            (ENVMAINTENANCE, config[CFGMAINTENANCE]),
-            (ENVSHOWCANCELLED, config[CFGSHOWCANCELLED]),
-            (ENVSHOWCHANGED, config[CFGSHOWCHANGES]),
-            (ENVHISTORY, config[CFGHISTORY])
+            (envParams.CLASSID.value, config[cfgParams.CLASSID.value]),
+            (envParams.PRIMARYCOLOR.value, config[cfgParams.COLORSCHEME.value][cfgParams.PRIMARYCOLOR.value]),
+            (envParams.CANCELLEDCOLOR.value, config[cfgParams.COLORSCHEME.value][cfgParams.]),
+            (envParams.CHANGEDCOLOR.value, config[cfgParams.COLORSCHEME.value][CFGCHANGEDCOLOR]),
+            (envParams.EXAMCOLOR.value, config[cfgParams.COLORSCHEME.value][CFGEXAMCOLOR]),
+            (envParams.WEEKSAHEAD.value, config[CFGWEEKSAHEAD]),
+            (envParams.MAINTENANCE.value, config[CFGMAINTENANCE]),
+            (envParams.SHOWCANCELLED.value, config[CFGSHOWCANCELLED]),
+            (envParams.SHOWCHANGED.value, config[CFGSHOWCHANGES]),
+            (envParams.HISTORY.value, config[CFGHISTORY])
 
         ]
         
