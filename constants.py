@@ -52,6 +52,13 @@ class credsParams(Enum):
     CERTPROVIDER="auth_provider_x509_cert_url"
     CERTCLIENT="client_x509_cert_url"
     DOMAIN="universe_domain"
+    
+class database(Enum):
+    SQLDIRVAR = "SQL_DIR"
+    DBPATHVAR = "DB_PATH"
+    DBPATHDEF = "maps.db"
+    CREATECLASSESSQLFILE = "createClasses.sql"
+    CREATEDIFFSQLFILE = "createDiff.sql"
 
 ######################################
 # 
