@@ -87,4 +87,14 @@ class mapBoolean(Enum):
     "no" = False
     "off" = False
 
-    
+######################################
+# 
+# Files
+#
+######################################
+
+class files(Enum):
+    CONFIG = 'config.json'
+    CREDENTIALS = 'credentials.json'
+    ENVIRONMENT = 'environment.json'
+   

@@ -7,7 +7,7 @@ If environment variables are not set, default values will be used.
 import os
 import json
 import sys
-from constants import cfgParams, envParams, envFile, credsParams, mapBoolean, logLevel
+from constants import cfgParams, envParams, envFile, credsParams, mapBoolean, logLevel, files
 
 
 DEFAULTCLASSID=0
@@ -81,27 +81,27 @@ def create_config():
 
 def create_env():
     env = {
-      "calendarID": "",
-      "cookie": "",
-      "anonymous-school": "",
-      "telegramToken": "",
-      "telegramChat": ""
+      envFile.CALENDARID.value: "",
+      envFile.COOKIE.value: "",
+      envFile.SCHOOL.value: "",
+      envFile.BOTTOKEN.value: "",
+      envFile.CHAT.value: ""
     }
     return env
 
 def create_creds():
     creds = {
-      "type": "",
-      "project_id": "",
-      "private_key_id": "",
-      "private_key": "",
-      "client_email": "",
-      "client_id": "",
-      "auth_uri": "",
-      "token_uri": "",
-      "auth_provider_x509_cert_url": "",
-      "client_x509_cert_url": "",
-      "universe_domain": ""
+      credsParams.TYPE.value: "",
+      credsParams.PROJECT.value: "",
+      credsParams.PRIVATEKEYID.value: "",
+      credsParams.PRIVATEKEY.value: "",
+      credsParams.EMAIL.value: "",
+      credsParams.CLIENTID.value: "",
+      credsParams.URIAUTH.value: "",
+      credsParams.URITOKEN.value: "",
+      credsParams.CERTPROVIDER.value: "",
+      credsParams.CERTCLIENT.value: "",
+      credsParams.DOMAIN.value: ""
     }
     return creds
 
@@ -115,9 +115,9 @@ def main():
         envs = create_env()
         
         # Write to config.json file
-        config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.json')
-        creds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'credentials.json')
-        envs_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'environment.json')
+        config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), files.CONFIG.value)
+        creds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), files.CREDENTIALS.value)
+        envs_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), files.ENVIRONMENT.value)
         
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
@@ -128,36 +128,36 @@ def main():
         with open(envs_path, 'w', encoding='utf-8') as f:
             json.dump(envs, f, indent=2, ensure_ascii=False)
         
-        print(f"[INF] Config file created successfully at: {config_path}")
-        print("[INF] Configuration:")
+        print(f"[{logLevel.INFO.value}] Config file created successfully at: {config_path}")
+        print(f"[{logLevel.INFO.value}] Configuration:")
         for line in json.dumps(config, indent=2).split('\n'):
-            print(f"[INF] {line}")
+            print(f"[{logLevel.INFO.value}] {line}")
         
         # Print environment variables that were used
-        print("[INF] Environment variables used:")
+        print(f"[{logLevel.INFO.value}] Environment variables used:")
         env_vars = [
             (envParams.CLASSID.value, config[cfgParams.CLASSID.value]),
             (envParams.PRIMARYCOLOR.value, config[cfgParams.COLORSCHEME.value][cfgParams.PRIMARYCOLOR.value]),
-            (envParams.CANCELLEDCOLOR.value, config[cfgParams.COLORSCHEME.value][cfgParams.]),
-            (envParams.CHANGEDCOLOR.value, config[cfgParams.COLORSCHEME.value][CFGCHANGEDCOLOR]),
-            (envParams.EXAMCOLOR.value, config[cfgParams.COLORSCHEME.value][CFGEXAMCOLOR]),
-            (envParams.WEEKSAHEAD.value, config[CFGWEEKSAHEAD]),
-            (envParams.MAINTENANCE.value, config[CFGMAINTENANCE]),
-            (envParams.SHOWCANCELLED.value, config[CFGSHOWCANCELLED]),
-            (envParams.SHOWCHANGED.value, config[CFGSHOWCHANGES]),
-            (envParams.HISTORY.value, config[CFGHISTORY])
+            (envParams.CANCELLEDCOLOR.value, config[cfgParams.COLORSCHEME.value][cfgParams.CANCELLEDCOLOR.value]),
+            (envParams.CHANGEDCOLOR.value, config[cfgParams.COLORSCHEME.value][cfgParams.CHANGEDCOLOR.value]),
+            (envParams.EXAMCOLOR.value, config[cfgParams.COLORSCHEME.value][cfgParams.EXAMCOLOR.value]),
+            (envParams.WEEKSAHEAD.value, config[cfgParams.WEEKSAHEAD.value]),
+            (envParams.MAINTENANCE.value, config[cfgParams.MAINTENANCE.value]),
+            (envParams.SHOWCANCELLED.value, config[cfgParams.SHOWCANCELLED.value]),
+            (envParams.SHOWCHANGED.value, config[cfgParams.SHOWCHANGES.value]),
+            (envParams.HISTORY.value, config[cfgParams.HISTORY.value])
 
         ]
         
         for env_var, value in env_vars:
             env_value = os.environ.get(env_var, '').strip()
             if env_value:
-                print(f"[INF]  {env_var}={env_value} ✓")
+                print(f"[{logLevel.INFO.value}]  {env_var}={env_value} ✓")
             else:
-                print(f"[INF]  {env_var}=(not set, using default: {value})")
+                print(f"[{logLevel.INFO.value}]  {env_var}=(not set, using default: {value})")
                 
     except Exception as e:
-        print(f"[ERR] Error creating config file: {e}", file=sys.stderr)
+        print(f"[{logLevel.ERROR.value}] Error creating config file: {e}", file=sys.stderr)
         sys.exit(1)
 
 
