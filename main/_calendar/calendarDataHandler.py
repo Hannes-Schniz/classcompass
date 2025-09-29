@@ -42,3 +42,7 @@ class calendarHandler:
                     )
             
             self.calendar.createEntry(event=event)
+    
+    def deleteEvents(self, startTime):
+        # TODO: delete all Events with start time
+        return 0
