@@ -72,5 +72,5 @@ class plutus:
         return 0
     
     def batchAmount(self):
-        batchCount = "select count(*) from classes group by batchID"
+        batchCount = "select count(*) from (select * from classes group by batchID)"
         return self.cur.execute(batchCount).fetchone()[0]

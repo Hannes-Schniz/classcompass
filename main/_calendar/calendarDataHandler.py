@@ -54,7 +54,8 @@ class calendarHandler:
         database = plutus()
         database.connect()
         
-        prevBatchID = database.getNewBatchID("classes") - 3
+        prevBatchID = database.getNewBatchID("classes") - 2
+        currBatchID = database.getNewBatchID("classes") - 1
         
         if prevBatchID < 0:
             return 0
@@ -62,9 +63,11 @@ class calendarHandler:
         
         oldClasses = database.getClasses(batchID=prevBatchID)
         
+        currClasses = database.getClasses(batchID=currBatchID)
+        
         database.closeConnection()
         
-        if len(self.classes) > len(oldClasses):
+        if len(currClasses) > len(oldClasses):
             self.calendar.removeEvents()
             return 1
             

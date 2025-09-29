@@ -7,7 +7,11 @@ def maintenance(count):
     
     batchCount = db.batchAmount()
     
-    for i in range(batchCount - count-1):
+    if batchCount - count < 2:
+        return 0
+    
+    for i in range(batchCount - count):
+        print(f"[INF] Removing Batch")
         db.removeFirstBatch()
     
     db.closeConnection()
