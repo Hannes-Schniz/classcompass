@@ -36,6 +36,19 @@ Management{% endblock %} {% block content %}
             How many weeks to look ahead for scheduling
           </div>
         </div>
+        <div class="form-group">
+          <label for="weeksAhead">Max Batch:</label>
+          <input
+            type="number"
+            id="maxBatch"
+            name="maxBatch"
+            class="form-control"
+            value="{{ config.maxBatch }}"
+            min="2" />
+          <div class="help-text">
+            How many Batches should be kept int the Database
+          </div>
+        </div>
       </div>
 
       <div
@@ -216,6 +229,7 @@ Management{% endblock %} {% block content %}
         maintenance: document.getElementById('maintenance').checked,
         showCancelled: document.getElementById('showCancelled').checked,
         showChanges: document.getElementById('showChanges').checked,
+        maxBatch: parseInt(document.getElementById('maxBatch').value),
       };
     }
 
