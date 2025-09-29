@@ -2,6 +2,7 @@ from _schedule.untisDataHandler import apiHandler
 from _calendar.calendarDataHandler import calendarHandler
 from configReader import configExtract
 from datetime import datetime, timedelta, timezone
+from _maintenance.dbmaint import maintenance
 import os
 
 conf = configExtract("config.json").conf
@@ -20,4 +21,8 @@ dataHandler.sendData()
 
 calendar.getData()
 
-calendar.sendData(conf['color-scheme'])
+calendar.deleteEvents()
+
+calendar.sendData(conf['color-scheme'], conf['showCancelled'], conf['showChanged'])
+
+maintenance(conf['maxBatch'])
