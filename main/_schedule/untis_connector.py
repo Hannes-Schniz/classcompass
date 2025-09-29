@@ -58,12 +58,12 @@ class exporter:
                     shortName = entry['position1'][0]['current']['shortName']
                 if entry['position2']:
                     room = entry['position2'][0]['current']['displayName']
-                if entry['statusDetail'] == "MOVED" and entry['status'] is "CANCELLED":
+                if entry['statusDetail'] == "MOVED" and entry['status'] == "CANCELLED":
                     oldStart = start
                     oldEnd = end
                     start = entry['moved']['start']
                     end = entry['moved']['end']
-                if entry['statusDetail'] == "MOVED" and entry['status'] is not "CANCELLED":
+                if entry['statusDetail'] == "MOVED" and entry['status'] != "CANCELLED":
                     oldStart = entry['moved']['start']
                     oldEnd = entry['moved']['end']
                 if entry['status'] == "CHANGED":
