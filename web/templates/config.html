@@ -149,15 +149,15 @@ Management{% endblock %} {% block content %}
           <div class="checkbox-group">
             <input
               type="checkbox"
-              id="showChanges"
-              name="showChanges"
+              id="showChanged"
+              name="showChanged"
               {%
               if
-              config.showChanges
+              config.showChanged
               %}checked{%
               endif
               %} />
-            <label for="showChanges">Show Changed Classes</label>
+            <label for="showChanged">Show Changed Classes</label>
           </div>
           <div class="help-text">Display changed classes in calendar</div>
         </div>
@@ -228,7 +228,7 @@ Management{% endblock %} {% block content %}
         weeksAhead: parseInt(document.getElementById('weeksAhead').value),
         maintenance: document.getElementById('maintenance').checked,
         showCancelled: document.getElementById('showCancelled').checked,
-        showChanges: document.getElementById('showChanges').checked,
+        showChanged: document.getElementById('showChanged').checked,
         maxBatch: parseInt(document.getElementById('maxBatch').value),
       };
     }
