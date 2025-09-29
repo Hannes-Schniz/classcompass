@@ -73,7 +73,7 @@ def create_config():
         cfgParams.WEEKSAHEAD.value: get_env_or_default(envParams.WEEKSAHEAD.value, DEFAULTWEEKSAHEAD, int),
         cfgParams.MAINTENANCE.value: get_env_or_default(envParams.MAINTENANCE.value, DEFAULTMAINTENANCE, bool),
         cfgParams.SHOWCANCELLED.value: get_env_or_default(envParams.SHOWCANCELLED.value, DEFAULTSHOWCANCELLED, bool),
-        cfgParams.SHOWCHANGES.value: get_env_or_default(envParams.SHOWCHANGED.value, DEFAULTSHOWCHANGED, bool),
+        cfgParams.SHOWCHANGED.value: get_env_or_default(envParams.SHOWCHANGED.value, DEFAULTSHOWCHANGED, bool),
         cfgParams.MAXBATCH.value: get_env_or_default(envParams.MAXBATCH.value, DEFAULTSHOWCHANGED, bool)
         }
     
@@ -144,7 +144,7 @@ def main():
             (envParams.WEEKSAHEAD.value, config[cfgParams.WEEKSAHEAD.value]),
             (envParams.MAINTENANCE.value, config[cfgParams.MAINTENANCE.value]),
             (envParams.SHOWCANCELLED.value, config[cfgParams.SHOWCANCELLED.value]),
-            (envParams.SHOWCHANGED.value, config[cfgParams.SHOWCHANGES.value]),
+            (envParams.SHOWCHANGED.value, config[cfgParams.SHOWCHANGED.value]),
             (envParams.MAXBATCH.value, config[cfgParams.MAXBATCH.value])
         ]
         

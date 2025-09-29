@@ -30,7 +30,7 @@ class cfgParams(Enum):
     WEEKSAHEAD="weeksAhead"
     MAINTENANCE="maintenance"
     SHOWCANCELLED="showCancelled"
-    SHOWCHANGES="showChanged"
+    SHOWCHANGED="showChanged"
     MAXBATCH="maxBatch"
     
 class envFile(Enum):
