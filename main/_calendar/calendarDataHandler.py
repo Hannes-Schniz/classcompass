@@ -33,6 +33,8 @@ class calendarHandler:
                 color = colorscheme['changed']
             if entry['type'] == 'EXAM':
                 color = colorscheme['exam']
+            if entry['state'] == 'MOVED':
+                continue
             event = self.calendar.buildEvent(
                     name=entry["name"],
                     location=entry["room"],
@@ -46,12 +48,17 @@ class calendarHandler:
             self.calendar.createEntry(event=event)
     
     def deleteEvents(self):
+        
         database = plutus()
         database.connect()
         
-        batchID = database.getNewBatchID("classes") - 1
+        prevBatchID = database.getNewBatchID("classes") - 2
         
-        oldClasses = database.getClasses(batchID=batchID)
+        if prevBatchID < 0:
+            return 0
+        
+        
+        oldClasses = database.getClasses(batchID=prevBatchID)
         
         database.closeConnection()
         
