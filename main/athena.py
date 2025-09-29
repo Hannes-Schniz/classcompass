@@ -20,4 +20,6 @@ dataHandler.sendData()
 
 calendar.getData()
 
+calendar.deleteEvents()
+
 calendar.sendData(conf['color-scheme'])

@@ -18,6 +18,8 @@ class calendarHandler:
         
         self.classes = database.getClasses(batchID=batchID)
         
+        database.closeConnection()
+        
         return 0
     
     def sendData(self, colorscheme):
@@ -43,6 +45,18 @@ class calendarHandler:
             
             self.calendar.createEntry(event=event)
     
-    def deleteEvents(self, startTime):
-        # TODO: delete all Events with start time
+    def deleteEvents(self):
+        database = plutus()
+        database.connect()
+        
+        batchID = database.getNewBatchID("classes") - 1
+        
+        oldClasses = database.getClasses(batchID=batchID)
+        
+        database.closeConnection()
+        
+        if len(self.classes) > len(oldClasses):
+            self.calendar.removeEvents()
+            return 1
+            
         return 0
