@@ -52,13 +52,21 @@ class credsParams(Enum):
     CERTPROVIDER="auth_provider_x509_cert_url"
     CERTCLIENT="client_x509_cert_url"
     DOMAIN="universe_domain"
-    
-class database(Enum):
+
+######################################
+# 
+# Database
+#
+######################################
+
+class dbParams(Enum):
     SQLDIRVAR = "SQL_DIR"
     DBPATHVAR = "DB_PATH"
     DBPATHDEF = "maps.db"
     CREATECLASSESSQLFILE = "createClasses.sql"
     CREATEDIFFSQLFILE = "createDiff.sql"
+    CLASSESTABLE = "classes"
+    DIFFTABLE = "diff"
 
 ######################################
 # 
@@ -104,4 +112,36 @@ class files(Enum):
     CONFIG = 'config.json'
     CREDENTIALS = 'credentials.json'
     ENVIRONMENT = 'environment.json'
-   
+
+######################################
+# 
+# API
+#
+######################################
+
+class api(Enum):
+    DATE = 'date'
+    STARTTIME='startTime'
+    ENDTIME='endTime'
+    TYPE='type'
+    STATE='state'
+    STATEDETAIL='stateDetail'
+    ROOM='room'
+    SUBJECT='subject'
+    SUBSTITUTETEXT='substituteText'
+    OLDDATE='oldDate'
+    NEWDATE='newDate'
+    OLDSTART='oldStart'
+    NEWSTART='newStart'
+    OLDEND='oldEnd'
+    NEWEND='newEnd'
+    OLDSTATE='oldState'
+    NEWSTATE='newState'
+    OLDSTATEDETAIL='oldStateDetail'
+    NEWSTATEDETAIL='newStateDetail'
+    OLDROOM='oldRoom'
+    NEWROOM='newRoom'
+    OLDSUBJECT='oldSubject'
+    NEWSUBJECT='newSubject'
+    OLDTEXT='oldText'
+    NEWTEXT='newText'

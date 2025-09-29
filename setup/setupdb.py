@@ -1,7 +1,7 @@
 import sqlite3
 import os
 import sys
-from constants import database, logLevel
+from constants import dbParams, logLevel
 
 
 DEFSQLPATH = "setup/sql"
@@ -11,7 +11,7 @@ DEFSQLPATH = "setup/sql"
 
 def get_sql_dir():
     """Get SQL files directory from environment variable or use default."""
-    sql_dir = os.environ.get(database.SQLDIRVAR.value, '').strip()
+    sql_dir = os.environ.get(dbParams.SQLDIRVAR.value, '').strip()
     if not sql_dir:
         sql_dir = DEFSQLPATH  # Default fallback
     
@@ -23,9 +23,9 @@ def get_sql_dir():
 
 def get_db_path():
     """Get database path from environment variable or use default."""
-    db_path = os.environ.get(database.DBPATHVAR.value, '').strip()
+    db_path = os.environ.get(dbParams.DBPATHVAR.value, '').strip()
     if not db_path:
-        db_path = database.DBPATHDEF.value  # Default fallback
+        db_path = dbParams.DBPATHDEF.value  # Default fallback
     # Ensure the directory exists if it's a full path
     db_dir = os.path.dirname(db_path)
     if db_dir and not os.path.exists(db_dir):
@@ -42,7 +42,7 @@ def main():
         # Connect to database
         db_path = get_db_path()
         print(f"[{logLevel.INFO.value}] Connecting to database: {db_path}")
-        if os.environ.get(database.DBPATHVAR.value):
+        if os.environ.get(dbParams.DBPATHVAR.value):
             print(f"[{logLevel.INFO.value}] Database path set via environment variable")
         else:
             print(f"[{logLevel.INFO.value}] Using default database path (set DB_PATH or DATABASE_PATH to override)")
@@ -54,14 +54,14 @@ def main():
         # Read SQL files
         sql_dir = get_sql_dir()
         print(f"[{logLevel.INFO.value}] SQL files directory: {sql_dir}")
-        if os.environ.get(database.SQLDIRVAR.value):
+        if os.environ.get(dbParams.SQLDIRVAR.value):
             print(f"[{logLevel.INFO.value}] SQL directory set via environment variable")
         else:
             print(f"[{logLevel.INFO.value}] Using default SQL directory (set SQL_DIR to override)")
         
         sql_files = [
-            (os.path.join(sql_dir, database.CREATECLASSESSQLFILE.value), 'Classes table creation'),
-            (os.path.join(sql_dir, database.CREATEDIFFSQLFILE.value), 'Diff table creation')
+            (os.path.join(sql_dir, dbParams.CREATECLASSESSQLFILE.value), 'Classes table creation'),
+            (os.path.join(sql_dir, dbParams.CREATEDIFFSQLFILE.value), 'Diff table creation')
         ]
         
         for sql_file, description in sql_files:
