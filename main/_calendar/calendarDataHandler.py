@@ -22,19 +22,21 @@ class calendarHandler:
         
         return 0
     
-    def sendData(self, colorscheme):
+    def sendData(self, colorscheme, showCancelled, showChanged):
         for entry in self.classes:
             color = None
             if entry["state"] == 'CANCELLED':
+                if not showCancelled:
+                    continue
                 color = colorscheme['cancelled']
             elif entry["state"] == 'CHANGED':
+                if not showChanged:
+                    continue
                 color = colorscheme['changed']
             elif entry["state"] == 'ADDITIONAL':
                 color = colorscheme['changed']
             if entry['type'] == 'EXAM':
                 color = colorscheme['exam']
-            if entry['state'] == 'MOVED':
-                continue
             event = self.calendar.buildEvent(
                     name=entry["name"],
                     location=entry["room"],

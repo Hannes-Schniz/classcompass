@@ -22,4 +22,4 @@ calendar.getData()
 
 calendar.deleteEvents()
 
-calendar.sendData(conf['color-scheme'])
+calendar.sendData(conf['color-scheme'], conf['showCancelled'], conf['showChanged'])
