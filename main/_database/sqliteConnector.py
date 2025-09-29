@@ -62,20 +62,15 @@ class plutus:
         
         return resultList
     
-    def deleteBatch(self,batchID: int):
-        delete = f"delete from classes where batchID = {batchID}"
-        self.cur.execute(delete)
-
-    def getBatches(self):
-        select = f"select count(*) from classes group by batchID"
-        res = self.cur.execute(select)
-        return res.fetchOne()
-
-    def getLowestBatchID(self):
-        select = "select min(batchID) from classes" 
-        res = self.cur.execute(select)
-        return res.fetchOne()
-
-    def deleteLastBatch(self):
-        batch = self.getLowestBatchID()
-        self.deleteBatch(batch)
+    def removeFirstBatch(self):
+        removeClasses = "delete from classes where batchID = (select min(batchID) from classes)"
+        #removediffs = "delete from diff where batchID = (select min(batchID) from diff)"
+        
+        self.cur.execute(removeClasses)
+        #self.cur.execute(removediffs)
+        
+        return 0
+    
+    def batchAmount(self):
+        batchCount = "select count(*) from (select * from classes group by batchID)"
+        return self.cur.execute(batchCount).fetchone()[0]

@@ -46,7 +46,8 @@ RUN useradd -ms /bin/bash navigator
 RUN echo "VENV=/opt/venv/bin/activate" > /var/spool/cron/crontabs/navigator && \
     echo "SOURCE=/home/navigator/classcompass" >> /var/spool/cron/crontabs/navigator && \
     echo "DB_PATH=/home/navigator/classcompass/maps.db" >> /var/spool/cron/crontabs/navigator && \
-    echo "0,5,10,15,20,25,30,35,40,45,50,55 * * * * bash /home/navigator/classcompass/exec.sh >> /var/log/classcompass-cron.log 2>&1" >> /var/spool/cron/crontabs/navigator
+    echo "0,5,10,15,20,25,30,35,40,45,50,55 * * * * bash /home/navigator/classcompass/exec.sh >> /var/log/classcompass-cron.log 2>&1" >> /var/spool/cron/crontabs/navigator &&\
+    echo "1 * * * * mv /var/log/classcompass-cron.log /var/log/classcompass-cron-$(date +'%Y%j').log" >> /var/spool/cron/crontabs/navigator
 RUN chmod 600 /var/spool/cron/crontabs/navigator
 RUN chown navigator:crontab /var/spool/cron/crontabs/navigator
 

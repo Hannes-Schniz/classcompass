@@ -36,20 +36,17 @@ Management{% endblock %} {% block content %}
             How many weeks to look ahead for scheduling
           </div>
         </div>
-      </div>
-
-      <div class="form-group">
-          <label for="history">Weeks Ahead:</label>
+        <div class="form-group">
+          <label for="weeksAhead">Max Batch:</label>
           <input
             type="number"
-            id="history"
-            name="history"
+            id="maxBatch"
+            name="maxBatch"
             class="form-control"
-            value="{{ config.history }}"
-            min="1"
-             />
+            value="{{ config.maxBatch }}"
+            min="2" />
           <div class="help-text">
-            How many batches should be stored
+            How many Batches should be kept int the Database
           </div>
         </div>
       </div>
@@ -152,15 +149,15 @@ Management{% endblock %} {% block content %}
           <div class="checkbox-group">
             <input
               type="checkbox"
-              id="showChanges"
-              name="showChanges"
+              id="showChanged"
+              name="showChanged"
               {%
               if
-              config.showChanges
+              config.showChanged
               %}checked{%
               endif
               %} />
-            <label for="showChanges">Show Changed Classes</label>
+            <label for="showChanged">Show Changed Classes</label>
           </div>
           <div class="help-text">Display changed classes in calendar</div>
         </div>
@@ -231,8 +228,8 @@ Management{% endblock %} {% block content %}
         weeksAhead: parseInt(document.getElementById('weeksAhead').value),
         maintenance: document.getElementById('maintenance').checked,
         showCancelled: document.getElementById('showCancelled').checked,
-        showChanges: document.getElementById('showChanges').checked,
-        history: parseInt(document.getElementById('history').value)
+        showChanged: document.getElementById('showChanged').checked,
+        maxBatch: parseInt(document.getElementById('maxBatch').value),
       };
     }
 
