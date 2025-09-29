@@ -1,6 +1,5 @@
 import requests
 from configReader import configExtract
-from database.sqliteConnector import plutus
 
 class exporter:
     
@@ -14,8 +13,6 @@ class exporter:
     'anonymous-school': conf['anonymous-school'],
     'cookie': conf['cookie']
     }
-
-    database = plutus()
     
     def getElementMap(self, elements):
         elementMap = {}
@@ -31,21 +28,22 @@ class exporter:
         
         try:
             response = requests.get(self.urlRest + optionsRest, headers=self.headers)
+            if response.status_code != 200:
+                print(f"Error fetching Data from API {response.status_code} Reason: {response.reason}")
+                quit(1)
             raw_data = response.json()
         except:
             raise Exception("Failed to retrieve Untis data correctly")
         
         
         periods = []
-        self.database.connect()
-        batchID = self.database.getNewBatchID()
-        print(batchID)
+        diffs = []
         for day in raw_data['days']:
             date = day['date']
             for entry in day['gridEntries']:
                 status = entry['status']
+                stateDetail = entry['statusDetail']
                 classType = entry['type']
-                moved = False
                 oldStart = None
                 oldEnd = None
                 changes = None
@@ -54,20 +52,20 @@ class exporter:
                 subText=entry['substitutionText']
                 if subText == None:
                     subText= ""
-                
                 start = entry['duration']['start']
                 end = entry['duration']['end']
                 if entry['position1']:
                     shortName = entry['position1'][0]['current']['shortName']
-                    longName = entry['position1'][0]['current']['longName']
                 if entry['position2']:
                     room = entry['position2'][0]['current']['displayName']
-                if entry['statusDetail'] == "MOVED":
-                    moved = True
+                if entry['statusDetail'] == "MOVED" and entry['status'] == "CANCELLED":
                     oldStart = start
                     oldEnd = end
                     start = entry['moved']['start']
                     end = entry['moved']['end']
+                if entry['statusDetail'] == "MOVED" and entry['status'] != "CANCELLED":
+                    oldStart = entry['moved']['start']
+                    oldEnd = entry['moved']['end']
                 if entry['status'] == "CHANGED":
                     changes = []
                     if entry['position1'][0]['removed'] != None:
@@ -75,26 +73,10 @@ class exporter:
                     if entry['position2'][0]['removed'] != None:
                         changedRoom= changes.append(entry['position2'][0]['removed']['shortName'])
                 
-                self.database.addClass(date,start, end, classType, status, "", room, shortName, subText, batchID)
+                periods.append({'date': date,'startTime': start, 'endTime':end,'type': classType, 'state': status,'stateDetail': stateDetail,'room': room, 'subject': shortName,'substituteText': subText})
+                if status != "REGULAR":
+                    diffs.append({'oldDate': "", 'newDate': date, 'oldStart':oldStart, 'newStart': start, 'oldEnd': oldEnd, 'newEnd': end, 'newState': status,'oldState': "", 'newStateDetail': stateDetail, 'oldStateDetail': "", 'oldRoom': changedRoom, 'newRoom': room, 'oldSubject': changedClass, 'newSubject': shortName, 'newText': subText, 'oldText': ""})
                 
-                
-                #periods.append({'name':shortName, 
-                #                  'location': room,
-                #                  'periodText': longName,
-                #                  'cellState': status,
-                #                  'date':date,
-                #                  'start':start,
-                #                  'end':end,
-                #                  'type': classType,
-                #                  'movedStart': oldStart,
-                #                  'movedEnd': oldEnd,
-                #                  'changedRoom': changedRoom,
-                #                  'changedClass': changedClass,
-                #                  'moved': moved})
-                #if verbose:
-                #    if entry['statusDetail'] == "MOVED":
-                #        print(f"[VERBOSE] period: {periods[-1]}") 
         if verbose:
             print(f"[VERBOSE] {len(periods)} fetched.")
-        self.database.closeConnection()  
-        return periods
+        return [periods, diffs]

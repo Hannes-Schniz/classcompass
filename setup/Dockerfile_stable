@@ -46,7 +46,8 @@ RUN useradd -ms /bin/bash navigator
 RUN echo "VENV=/opt/venv/bin/activate" > /var/spool/cron/crontabs/navigator && \
     echo "SOURCE=/home/navigator/classcompass" >> /var/spool/cron/crontabs/navigator && \
     echo "DB_PATH=/home/navigator/classcompass/maps.db" >> /var/spool/cron/crontabs/navigator && \
-    echo "* * * * * bash /home/navigator/classcompass/exec.sh >> /var/log/classcompass-cron.log 2>&1" >> /var/spool/cron/crontabs/navigator
+    echo "0,5,10,15,20,25,30,35,40,45,50,55 * * * * bash /home/navigator/classcompass/exec.sh >> /var/log/classcompass-cron.log 2>&1" >> /var/spool/cron/crontabs/navigator &&\
+    echo "1 * * * * mv /var/log/classcompass-cron.log /var/log/classcompass-cron-$(date +'%Y%j').log" >> /var/spool/cron/crontabs/navigator
 RUN chmod 600 /var/spool/cron/crontabs/navigator
 RUN chown navigator:crontab /var/spool/cron/crontabs/navigator
 
@@ -61,7 +62,7 @@ RUN echo 'export SOURCE="/home/navigator/classcompass"' >> /home/navigator/.bash
 RUN echo "export DB_PATH=${DB_PATH}" >> /home/navigator/.bashrc
 RUN echo "cd $SOURCE" >> /home/navigator/.bashrc 
 
-RUN git clone https://github.com/Hannes-Schniz/classcompass.git
+RUN git clone -b deploy_stable https://github.com/Hannes-Schniz/classcompass.git
 
 USER root
 
@@ -77,33 +78,33 @@ RUN bash classcompass/setup.sh > /var/log/setup.log
 RUN echo "source /opt/venv/bin/activate" >> /home/navigator/.bashrc
 
 # Create startup script to run both cron and web server
-RUN echo '#!/bin/bash' > /start.sh && \
-    echo 'echo "Starting ClassCompass services..."' >> /start.sh && \
-    echo 'service cron start' >> /start.sh && \
-    echo 'echo "Cron service started"' >> /start.sh && \
-    echo '# Ensure crontab is loaded for navigator user' >> /start.sh && \
-    echo 'crontab -u navigator /var/spool/cron/crontabs/navigator' >> /start.sh && \
-    echo 'echo "Crontab activated for navigator user"' >> /start.sh && \
-    echo 'cd /home/navigator/classcompass' >> /start.sh && \
-    echo 'source /opt/venv/bin/activate' >> /start.sh && \
-    echo 'echo "Starting web server on port 5001..."' >> /start.sh && \
-    echo 'touch /var/log/webserver.log' >> /start.sh && \
-    echo 'touch /var/log/classcompass-cron.log' >> /start.sh && \
-    echo 'chown navigator:navigator /var/log/classcompass-cron.log' >> /start.sh && \
-    echo 'nohup python3 web/app.py > /var/log/webserver.log 2>&1 &' >> /start.sh && \
-    echo 'echo "Web server started in background"' >> /start.sh && \
-    echo 'echo "ClassCompass is ready!"' >> /start.sh && \
-    echo 'echo "Access web interface at: http://localhost:5001"' >> /start.sh && \
-    echo 'echo "Logs available at:"' >> /start.sh && \
-    echo 'echo "  Web Server: /var/log/webserver.log"' >> /start.sh && \
-    echo 'echo "  Cron Jobs:  /var/log/classcompass-cron.log"' >> /start.sh && \
-    echo 'echo "  System:     /var/log/syslog (for cron daemon)"' >> /start.sh && \
-    echo 'echo ""' >> /start.sh && \
-    echo 'echo "Test cron job with: crontab -l -u navigator"' >> /start.sh && \
-    echo 'echo "Container will keep running... Press Ctrl+C to stop"' >> /start.sh && \
-    echo 'sleep 2' >> /start.sh && \
-    echo 'tail -f /var/log/webserver.log' >> /start.sh && \
-    chmod +x /start.sh
+RUN echo '#!/bin/bash' > /start.sh
+RUN echo 'echo "Starting ClassCompass services..."' >> /start.sh
+RUN echo 'service cron start' >> /start.sh
+RUN echo 'echo "Cron service started"' >> /start.sh
+RUN echo '# Ensure crontab is loaded for navigator user' >> /start.sh
+RUN echo 'crontab -u navigator /var/spool/cron/crontabs/navigator' >> /start.sh
+RUN echo 'echo "Crontab activated for navigator user"' >> /start.sh
+RUN echo 'cd /home/navigator/classcompass' >> /start.sh
+RUN echo 'source /opt/venv/bin/activate' >> /start.sh
+RUN echo 'echo "Starting web server on port 5001..."' >> /start.sh
+RUN echo 'touch /var/log/webserver.log' >> /start.sh
+RUN echo 'touch /var/log/classcompass-cron.log' >> /start.sh
+RUN echo 'chown navigator:navigator /var/log/classcompass-cron.log' >> /start.sh
+RUN echo 'nohup python3 web/app.py > /var/log/webserver.log 2>&1 &' >> /start.sh
+RUN echo 'echo "Web server started in background"' >> /start.sh
+RUN echo 'echo "ClassCompass is ready!"' >> /start.sh
+RUN echo 'echo "Access web interface at: http://localhost:5001"' >> /start.sh
+RUN echo 'echo "Logs available at:"' >> /start.sh
+RUN echo 'echo "  Web Server: /var/log/webserver.log"' >> /start.sh
+RUN echo 'echo "  Cron Jobs:  /var/log/classcompass-cron.log"' >> /start.sh
+RUN echo 'echo "  System:     /var/log/syslog (for cron daemon)"' >> /start.sh
+RUN echo 'echo ""' >> /start.sh
+RUN echo 'echo "Test cron job with: crontab -l -u navigator"' >> /start.sh
+RUN echo 'echo "Container will keep running... Press Ctrl+C to stop"' >> /start.sh
+RUN echo 'sleep 2' >> /start.sh
+RUN echo 'tail -f /var/log/webserver.log' >> /start.sh
+RUN chmod +x /start.sh
 
 RUN chown -R navigator:navigator classcompass/
 

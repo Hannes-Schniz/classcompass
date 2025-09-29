@@ -16,7 +16,8 @@ DEFAULTEXAM=10
 DEFAULTWEEKSAHEAD=3
 DEFAULTMAINTENANCE=False
 DEFAULTSHOWCANCELLED=False
-DEFAULTSHOWCHANGES=False
+DEFAULTSHOWCHANGED=False
+DEFAULTMAXBATCH=4032
 ENVCLASSID= "CLASS_ID"
 ENVPRIMARYCOLOR= "COLOR_PRIMARY"
 ENVCANCELLEDCOLOR="COLOR_CANCELLED"
@@ -25,7 +26,8 @@ ENVEXAMCOLOR="COLOR_EXAM"
 ENVWEEKSAHEAD="WEEKS_AHEAD"
 ENVMAINTENANCE="MAINTENANCE"
 ENVSHOWCANCELLED="SHOW_CANCELLED"
-ENVSHOWCHANGED="SHOW_CHANGES"
+ENVSHOWCHANGED="SHOW_CHANGED"
+ENVMAXBATCH="MAX_BATCH"
 CFGCLASSID="classID"
 CFGCOLORSCHEME="color-scheme"
 CFGPRIMARYCOLOR="primary"
@@ -35,7 +37,8 @@ CFGEXAMCOLOR="exam"
 CFGWEEKSAHEAD="weeksAhead"
 CFGMAINTENANCE="maintenance"
 CFGSHOWCANCELLED="showCancelled"
-CFGSHOWCHANGES="showChanges"
+CFGSHOWCHANGED="showChanged"
+CFGMAXBATCH="maxBatch"
 
 
 def get_env_or_default(env_var, default_value, value_type=str):
@@ -90,10 +93,37 @@ def create_config():
         CFGWEEKSAHEAD: get_env_or_default(ENVWEEKSAHEAD, DEFAULTWEEKSAHEAD, int),
         CFGMAINTENANCE: get_env_or_default(ENVMAINTENANCE, DEFAULTMAINTENANCE, bool),
         CFGSHOWCANCELLED: get_env_or_default(ENVSHOWCANCELLED, DEFAULTSHOWCANCELLED, bool),
-        CFGSHOWCHANGES: get_env_or_default(ENVSHOWCHANGED, DEFAULTSHOWCHANGES, bool)
+        CFGSHOWCHANGED: get_env_or_default(ENVSHOWCHANGED, DEFAULTSHOWCHANGED, bool),
+        CFGMAXBATCH: get_env_or_default(ENVMAXBATCH, DEFAULTMAXBATCH, int)
         }
     
     return config
+
+def create_env():
+    env = {
+      "calendarID": "",
+      "cookie": "",
+      "anonymous-school": "",
+      "telegramToken": "",
+      "telegramChat": ""
+    }
+    return env
+
+def create_creds():
+    creds = {
+      "type": "",
+      "project_id": "",
+      "private_key_id": "",
+      "private_key": "",
+      "client_email": "",
+      "client_id": "",
+      "auth_uri": "",
+      "token_uri": "",
+      "auth_provider_x509_cert_url": "",
+      "client_x509_cert_url": "",
+      "universe_domain": ""
+    }
+    return creds
 
 
 def main():
@@ -101,12 +131,22 @@ def main():
     try:
         # Create config dictionary
         config = create_config()
+        creds = create_creds()
+        envs = create_env()
         
         # Write to config.json file
         config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.json')
+        creds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'credentials.json')
+        envs_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'environment.json')
         
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2, ensure_ascii=False)
+            
+        with open(creds_path, 'w', encoding='utf-8') as f:
+            json.dump(creds, f, indent=2, ensure_ascii=False)
+            
+        with open(envs_path, 'w', encoding='utf-8') as f:
+            json.dump(envs, f, indent=2, ensure_ascii=False)
         
         print(f"[INF] Config file created successfully at: {config_path}")
         print("[INF] Configuration:")
@@ -124,7 +164,8 @@ def main():
             (ENVWEEKSAHEAD, config[CFGWEEKSAHEAD]),
             (ENVMAINTENANCE, config[CFGMAINTENANCE]),
             (ENVSHOWCANCELLED, config[CFGSHOWCANCELLED]),
-            (ENVSHOWCHANGED, config[CFGSHOWCHANGES])
+            (ENVSHOWCHANGED, config[CFGSHOWCHANGED]),
+            (ENVMAXBATCH, config[CFGMAXBATCH])
         ]
         
         for env_var, value in env_vars:
