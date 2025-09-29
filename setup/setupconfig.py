@@ -20,27 +20,6 @@ DEFAULTMAINTENANCE=False
 DEFAULTSHOWCANCELLED=False
 DEFAULTSHOWCHANGED=False
 DEFAULTMAXBATCH=4032
-ENVCLASSID= "CLASS_ID"
-ENVPRIMARYCOLOR= "COLOR_PRIMARY"
-ENVCANCELLEDCOLOR="COLOR_CANCELLED"
-ENVCHANGEDCOLOR="COLOR_CHANGED"
-ENVEXAMCOLOR="COLOR_EXAM"
-ENVWEEKSAHEAD="WEEKS_AHEAD"
-ENVMAINTENANCE="MAINTENANCE"
-ENVSHOWCANCELLED="SHOW_CANCELLED"
-ENVSHOWCHANGED="SHOW_CHANGED"
-ENVMAXBATCH="MAX_BATCH"
-CFGCLASSID="classID"
-CFGCOLORSCHEME="color-scheme"
-CFGPRIMARYCOLOR="primary"
-CFGCANCELLEDCOLOR="cancelled"
-CFGCHANGEDCOLOR="changed"
-CFGEXAMCOLOR="exam"
-CFGWEEKSAHEAD="weeksAhead"
-CFGMAINTENANCE="maintenance"
-CFGSHOWCANCELLED="showCancelled"
-CFGSHOWCHANGED="showChanged"
-CFGMAXBATCH="maxBatch"
 
 
 def get_env_or_default(env_var, default_value, value_type=str):
@@ -94,13 +73,8 @@ def create_config():
         cfgParams.WEEKSAHEAD.value: get_env_or_default(envParams.WEEKSAHEAD.value, DEFAULTWEEKSAHEAD, int),
         cfgParams.MAINTENANCE.value: get_env_or_default(envParams.MAINTENANCE.value, DEFAULTMAINTENANCE, bool),
         cfgParams.SHOWCANCELLED.value: get_env_or_default(envParams.SHOWCANCELLED.value, DEFAULTSHOWCANCELLED, bool),
-        cfgParams.SHOWCHANGES.value: get_env_or_default(envParams.SHOWCHANGED.value, DEFAULTSHOWCHANGES, bool),
-        cfgParams.HISTORY.value: get_env_or_default(envParams.HISTORY.value, DEFAULTSHOWCHANGES, bool)
-        CFGWEEKSAHEAD: get_env_or_default(ENVWEEKSAHEAD, DEFAULTWEEKSAHEAD, int),
-        CFGMAINTENANCE: get_env_or_default(ENVMAINTENANCE, DEFAULTMAINTENANCE, bool),
-        CFGSHOWCANCELLED: get_env_or_default(ENVSHOWCANCELLED, DEFAULTSHOWCANCELLED, bool),
-        CFGSHOWCHANGED: get_env_or_default(ENVSHOWCHANGED, DEFAULTSHOWCHANGED, bool),
-        CFGMAXBATCH: get_env_or_default(ENVMAXBATCH, DEFAULTMAXBATCH, int)
+        cfgParams.SHOWCHANGES.value: get_env_or_default(envParams.SHOWCHANGED.value, DEFAULTSHOWCHANGED, bool),
+        cfgParams.MAXBATCH.value: get_env_or_default(envParams.MAXBATCH.value, DEFAULTSHOWCHANGED, bool)
         }
     
     return config
@@ -171,18 +145,7 @@ def main():
             (envParams.MAINTENANCE.value, config[cfgParams.MAINTENANCE.value]),
             (envParams.SHOWCANCELLED.value, config[cfgParams.SHOWCANCELLED.value]),
             (envParams.SHOWCHANGED.value, config[cfgParams.SHOWCHANGES.value]),
-            (envParams.HISTORY.value, config[cfgParams.HISTORY.value])
-
-            (ENVCLASSID, config[CFGCLASSID]),
-            (ENVPRIMARYCOLOR, config[CFGCOLORSCHEME][CFGPRIMARYCOLOR]),
-            (ENVCANCELLEDCOLOR, config[CFGCOLORSCHEME][CFGCANCELLEDCOLOR]),
-            (ENVCHANGEDCOLOR, config[CFGCOLORSCHEME][CFGCHANGEDCOLOR]),
-            (ENVEXAMCOLOR, config[CFGCOLORSCHEME][CFGEXAMCOLOR]),
-            (ENVWEEKSAHEAD, config[CFGWEEKSAHEAD]),
-            (ENVMAINTENANCE, config[CFGMAINTENANCE]),
-            (ENVSHOWCANCELLED, config[CFGSHOWCANCELLED]),
-            (ENVSHOWCHANGED, config[CFGSHOWCHANGED]),
-            (ENVMAXBATCH, config[CFGMAXBATCH])
+            (envParams.MAXBATCH.value, config[cfgParams.MAXBATCH.value])
         ]
         
         for env_var, value in env_vars:

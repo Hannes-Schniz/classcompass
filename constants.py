@@ -30,8 +30,8 @@ class cfgParams(Enum):
     WEEKSAHEAD="weeksAhead"
     MAINTENANCE="maintenance"
     SHOWCANCELLED="showCancelled"
-    SHOWCHANGES="showChanges"
-    HISTORY="history"
+    SHOWCHANGES="showChanged"
+    MAXBATCH="maxBatch"
     
 class envFile(Enum):
     CALENDARID="calendarID"
@@ -75,8 +75,8 @@ class envParams(Enum):
     WEEKSAHEAD="WEEKS_AHEAD"
     MAINTENANCE="MAINTENANCE"
     SHOWCANCELLED="SHOW_CANCELLED"
-    SHOWCHANGED="SHOW_CHANGES"
-    HISTORY="HISTORY_COUNT"
+    SHOWCHANGED="SHOW_CHANGED"
+    MAXBATCH="MAX_BATCH"
 
 ######################################
 # 
