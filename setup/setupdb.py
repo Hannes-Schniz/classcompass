@@ -7,6 +7,7 @@ DBPATHVAR = "DB_PATH"
 DBPATHDEF="maps.db"
 CREATECLASSESSQLFILE="createClasses.sql"
 CREATEDIFFSQLFILE="createDiff.sql"
+CREATENOTIFICATIONFILE="createNotification.sql"
 
 #TODO: sanitize debug output
 #TODO: set correct DB_PATH when using default
@@ -63,7 +64,8 @@ def main():
         
         sql_files = [
             (os.path.join(sql_dir, CREATECLASSESSQLFILE), 'Classes table creation'),
-            (os.path.join(sql_dir, CREATEDIFFSQLFILE), 'Diff table creation')
+            (os.path.join(sql_dir, CREATEDIFFSQLFILE), 'Diff table creation'),
+            (os.path.join(sql_dir, CREATENOTIFICATIONFILE), 'Notification table creation')
         ]
         
         for sql_file, description in sql_files:
