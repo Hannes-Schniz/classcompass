@@ -1,7 +1,8 @@
 CREATE TABLE notifications(
-    notificationID,
+    notificationID INTEGER PRIMARY KEY,
     message,
-    timestamp,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     hash,
-    plattform
+    plattform,
+    destination
 )
