@@ -54,7 +54,7 @@ class calendarHandler:
         database = plutus()
         database.connect()
         
-        prevBatchID = database.getNewBatchID("classes") - 2
+        prevBatchID = database.getNewBatchID("classes") - 3
         
         if prevBatchID < 0:
             return 0
