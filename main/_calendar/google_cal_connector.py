@@ -45,7 +45,7 @@ class googleCalCon:
         return build('calendar', 'v3', credentials=credentials)
     
     #Dateformat : YYYY-MM-DDTHH:MM
-    def createEntry(self, event, simulate=None, verbose=None):
+    def checkEntry(self, event, simulate=None, verbose=None):
         # Allow override per call, else use instance setting
         if simulate is None:
             simulate = self.simulate
@@ -58,8 +58,11 @@ class googleCalCon:
         if self.eventExists(event, self.events) != False:
             if simulate or verbose:
                 print(f"[SIMULATION][VERBOSE] Event already exists and would be skipped: {event['summary']}")
-            return
+            return False
 
+        return True
+
+    def sendEvent(self, event):
         if simulate:
             print(f"[SIMULATION] Would create event: '{event['summary']}'")
             print(f"  Location: {event['location']}")
