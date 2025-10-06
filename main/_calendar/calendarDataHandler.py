@@ -41,23 +41,24 @@ class calendarHandler:
             event = self.calendar.buildEvent(
                     name=entry["name"],
                     location=entry["room"],
-                    description=entry["state"],
+                    description=f"Comment: {entry['substituteText']}",
                     namePrefix=f"{entry["state"]} ",
                     background=color,
                     start=entry["startTime"],
                     end=entry["endTime"]
                     )
             
-            insert = self.calendar.checkEntry(event=event)
             if (insert):
-                insertQueue += event
+                deleteCal = True
+            insertQueue.append(event)
 
-        if len(insertQueue) > 0:
-            self.calendar.removeEvents()
+        if not deleteCal:
+            return 0
+
+        self.calendar.removeEvents()
 
         for event in insertQueue:
             self.calendar.sendEvent(event)
-
 
     
     def deleteEvents(self):
