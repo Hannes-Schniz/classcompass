@@ -48,6 +48,7 @@ class calendarHandler:
                     end=entry["endTime"]
                     )
             
+            insert = self.calendar.checkInsertEvent(event=event)
             if (insert):
                 deleteCal = True
             insertQueue.append(event)
