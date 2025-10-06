@@ -23,8 +23,6 @@ dataHandler.sendData()
 
 calendar.getData()
 
-calendar.deleteEvents()
-
 calendar.sendData(conf['color-scheme'], conf['showCancelled'], conf['showChanged'])
 
 if conf['maintenance'] != "True":

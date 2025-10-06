@@ -105,7 +105,7 @@ class NotificationHandler():
         for label, old_key, new_key in fields:
             old_val = diff_row.get(old_key, "")
             new_val = diff_row.get(new_key, "")
-            if _has_value(old_val) and _has_value(new_val):
+            if (_has_value(old_val) and _has_value(new_val)) or (label == 'Text' and _has_value(new_val)):
                 # Reuse date formatting for Date field
                 if label == "Date":
                     old_val_fmt = _fmt_date(str(old_val))
