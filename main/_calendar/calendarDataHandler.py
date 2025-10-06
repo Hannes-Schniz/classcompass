@@ -24,6 +24,7 @@ class calendarHandler:
     
     def sendData(self, colorscheme, showCancelled, showChanged):
         insertQueue = []
+        deleteCal = False
         for entry in self.classes:
             color = None
             if entry["state"] == 'CANCELLED':
@@ -48,6 +49,7 @@ class calendarHandler:
                     end=entry["endTime"]
                     )
             
+            insert = self.calendar.checkInsertEvent(event=event)
             if (insert):
                 deleteCal = True
             insertQueue.append(event)
