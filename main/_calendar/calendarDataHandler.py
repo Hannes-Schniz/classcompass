@@ -4,6 +4,8 @@ from _database.sqliteConnector import plutus
 class calendarHandler:
     
     classes=None
+
+    old_classes = None
     
     calendar = None
     
@@ -15,8 +17,12 @@ class calendarHandler:
         database.connect()
         
         batchID = database.getNewBatchID("classes") - 1
+
+        old_batchID = database.getNewBatchID("classes") - 2
         
         self.classes = database.getClasses(batchID=batchID)
+
+        self.classes = database.getClasses(batchID=old_batchID)
         
         database.closeConnection()
         
@@ -28,10 +34,14 @@ class calendarHandler:
         for entry in self.classes:
             color = None
             if entry["state"] == 'CANCELLED':
+                if entry not in self.old_classes:
+                    deleteCal = True
                 if not showCancelled:
                     continue
                 color = colorscheme['cancelled']
             elif entry["state"] == 'CHANGED':
+                if entry not in self.old_classes:
+                    deleteCal = True
                 if not showChanged:
                     continue
                 color = colorscheme['changed']
