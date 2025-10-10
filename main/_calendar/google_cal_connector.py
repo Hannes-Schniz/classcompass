@@ -45,7 +45,7 @@ class googleCalCon:
         return build('calendar', 'v3', credentials=credentials)
     
     #Dateformat : YYYY-MM-DDTHH:MM
-    def createEntry(self, event, simulate=None, verbose=None):
+    def checkInsertEvent(self, event, simulate=None, verbose=None):
         # Allow override per call, else use instance setting
         if simulate is None:
             simulate = self.simulate
@@ -58,9 +58,12 @@ class googleCalCon:
         if self.eventExists(event, self.events) != False:
             if simulate or verbose:
                 print(f"[SIMULATION][VERBOSE] Event already exists and would be skipped: {event['summary']}")
-            return
+            return False
 
-        if simulate:
+        return True
+
+    def sendEvent(self, event):
+        if self.simulate:
             print(f"[SIMULATION] Would create event: '{event['summary']}'")
             print(f"  Location: {event['location']}")
             print(f"  Description: {event['description']}")
@@ -71,7 +74,7 @@ class googleCalCon:
             # Also print the Telegram message that would be sent
             #self.sendMessage(namePrefix, name, location, description, start, end, simulate=True, verbose=verbose)
         else:
-            if verbose:
+            if self.verbose:
                 print(f"[VERBOSE] Creating event: {event['summary']}")
             #self.sendMessage(namePrefix, name, location, description, start, end, verbose=verbose)
             self.service.events().insert(calendarId=self.env['calendarID'], body=event).execute()
@@ -235,7 +238,7 @@ class googleCalCon:
             
     
     def removeEvents(self, verbose=None):
-        events = self.getEntries(self.weeks)
+        events = self.getEntries(1)
 
         if self.simulate:
             print(f"[SIMULATION] The following events would be deleted from calendar {self.env['calendarID']}:")

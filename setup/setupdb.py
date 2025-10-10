@@ -5,6 +5,9 @@ from constants import dbParams, logLevel
 
 
 DEFSQLPATH = "setup/sql"
+SQLDIRVAR = "SQL_DIR"
+DBPATHVAR = "DB_PATH"
+DBPATHDEF="maps.db"
 
 #TODO: sanitize debug output
 #TODO: set correct DB_PATH when using default
@@ -62,6 +65,7 @@ def main():
         sql_files = [
             (os.path.join(sql_dir, dbParams.CREATECLASSESSQLFILE.value), 'Classes table creation'),
             (os.path.join(sql_dir, dbParams.CREATEDIFFSQLFILE.value), 'Diff table creation')
+            (os.path.join(sql_dir, dbParams.CREATENOTIFICATIONFILE.value)), 'Notification table creation')
         ]
         
         for sql_file, description in sql_files:

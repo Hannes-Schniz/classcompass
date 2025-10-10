@@ -64,6 +64,7 @@ class dbParams(Enum):
     DBPATHVAR = "DB_PATH"
     DBPATHDEF = "maps.db"
     CREATECLASSESSQLFILE = "createClasses.sql"
+    CREATENOTIFICATIONFILE="createNotification.sql"
     CREATEDIFFSQLFILE = "createDiff.sql"
     CLASSESTABLE = "classes"
     DIFFTABLE = "diff"

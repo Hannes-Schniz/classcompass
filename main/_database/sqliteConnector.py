@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import hashlib
 
 
 class plutus:
@@ -61,6 +62,53 @@ class plutus:
             })
         
         return resultList
+    
+    def getDiffs(self, batchID: int):
+        """Return all diffs for a batch as a list of dicts.
+
+        Uses the actual diff schema (old/new fields) and a parameterized query.
+        """
+        columns = [
+            "batchID",
+            "oldDate", "newDate",
+            "oldStart", "newStart",
+            "oldEnd", "newEnd",
+            "oldState", "newState",
+            "oldStateDetail", "newStateDetail",
+            "oldRoom", "newRoom",
+            "oldSubject", "newSubject",
+            "oldText", "newText",
+        ]
+
+        select = (
+            "SELECT "
+            + ", ".join(columns)
+            + " FROM diff WHERE batchID = ?"
+        )
+        res = self.cur.execute(select, (batchID,))
+        rows = res.fetchall()
+
+        return [dict(zip(columns, row)) for row in rows]
+    
+    def addNotification(self, message, plattform, destination):
+        
+        h = hashlib.new('md5')
+        string = f"{message}:{plattform}:{destination}"
+        h.update(string.encode('utf-8'))
+        
+        select = f"Select count(*) from notifications where hash = ?"
+        
+        exists = self.cur.execute(select, (h.hexdigest(),)).fetchone()[0]
+        
+        if exists > 0:
+            return -1
+        
+        insert = f"INSERT INTO notifications (message, plattform, destination, hash) VALUES (?,?,?,?)"
+        
+        self.cur.execute(insert, (f"{message}", f"{plattform}", f"{destination}", f"{h.hexdigest()}",))
+        self.conn.commit()
+        return 0
+        
     
     def removeFirstBatch(self):
         removeClasses = "delete from classes where batchID = (select min(batchID) from classes)"

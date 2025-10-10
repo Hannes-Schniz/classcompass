@@ -67,11 +67,10 @@ class exporter:
                     oldStart = entry['moved']['start']
                     oldEnd = entry['moved']['end']
                 if entry['status'] == "CHANGED":
-                    changes = []
                     if entry['position1'][0]['removed'] != None:
-                        changedClass= changes.append(entry['position1'][0]['removed']['displayName'])
+                        changedClass= entry['position1'][0]['removed']['displayName']
                     if entry['position2'][0]['removed'] != None:
-                        changedRoom= changes.append(entry['position2'][0]['removed']['shortName'])
+                        changedRoom= entry['position2'][0]['removed']['shortName']
                 
                 periods.append({'date': date,'startTime': start, 'endTime':end,'type': classType, 'state': status,'stateDetail': stateDetail,'room': room, 'subject': shortName,'substituteText': subText})
                 if status != "REGULAR":
