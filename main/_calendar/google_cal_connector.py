@@ -238,7 +238,7 @@ class googleCalCon:
             
     
     def removeEvents(self, verbose=None):
-        events = self.getEntries(1)
+        events = self.getEntries(self.weeks)
 
         if self.simulate:
             print(f"[SIMULATION] The following events would be deleted from calendar {self.env['calendarID']}:")
