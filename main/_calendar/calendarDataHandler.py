@@ -1,5 +1,6 @@
 from _calendar.google_cal_connector import googleCalCon
 from _database.sqliteConnector import plutus
+from datetime import datetime
 
 class calendarHandler:
     
@@ -58,7 +59,8 @@ class calendarHandler:
                     start=entry["startTime"],
                     end=entry["endTime"]
                     )
-            
+            if (datetime.fromisoformat(event['start'].get('dateTime')) < datetime.now()):
+                continue
             insert = self.calendar.checkInsertEvent(event=event)
             if (insert):
                 deleteCal = True
