@@ -1,11 +1,13 @@
 import requests
 from configReader import configExtract
 
+from constants import files
+
 
 class exporter:
     urlRest = "https://erato.webuntis.com/WebUntis/api/rest/view/v1/timetable/entries"
 
-    conf = configExtract("environment.json").conf
+    conf = configExtract(files.ENVIRONMENT).conf
 
     headers = {
         "accept": "application/json, text/plain, */*",

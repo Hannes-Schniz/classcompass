@@ -2,6 +2,9 @@ from _calendar.google_cal_connector import googleCalCon
 from _database.sqliteConnector import plutus
 from datetime import datetime
 
+from constants import cfgParams, dbParams
+
+
 class calendarHandler:
     
     classes=None
@@ -9,26 +12,26 @@ class calendarHandler:
     old_classes = None
     
     calendar = None
-    
+
     def __init__(self, weeks):
         self.calendar = googleCalCon(weeks=weeks)
-    
+
     def getData(self):
         database = plutus()
         database.connect()
         
         batchID = database.getNewBatchID("classes") - 1
 
-        old_batchID = database.getNewBatchID("classes") - 2
-        
+        batchID = database.getNewBatchID(dbParams.CLASSESTABLE) - 1
+
         self.classes = database.getClasses(batchID=batchID)
 
         self.classes = database.getClasses(batchID=old_batchID)
         
         database.closeConnection()
-        
+
         return 0
-    
+
     def sendData(self, colorscheme, showCancelled, showChanged):
         insertQueue = []
         deleteCal = False
@@ -45,11 +48,11 @@ class calendarHandler:
                     deleteCal = True
                 if not showChanged:
                     continue
-                color = colorscheme['changed']
-            elif entry["state"] == 'ADDITIONAL':
-                color = colorscheme['changed']
-            if entry['type'] == 'EXAM':
-                color = colorscheme['exam']
+                color = colorscheme["changed"]
+            elif entry["state"] == "ADDITIONAL":
+                color = colorscheme["changed"]
+            if entry["type"] == "EXAM":
+                color = colorscheme["exam"]
             event = self.calendar.buildEvent(
                     name=entry["name"],
                     location=entry["room"],
@@ -76,23 +79,21 @@ class calendarHandler:
 
     
     def deleteEvents(self):
-        
         database = plutus()
         database.connect()
-        
+
         prevBatchID = database.getNewBatchID("classes") - 2
         currBatchID = database.getNewBatchID("classes") - 1
-        
+
         if prevBatchID < 0:
             return 0
-        
-        
+
         oldClasses = database.getClasses(batchID=prevBatchID)
-        
+
         currClasses = database.getClasses(batchID=currBatchID)
-        
+
         database.closeConnection()
-        
+
         if len(currClasses) > len(oldClasses):
             self.calendar.removeEvents()
             return 1

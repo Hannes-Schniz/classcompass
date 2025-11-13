@@ -61,7 +61,7 @@ Looking for end‑user, step‑by‑step instructions for the web interface? See
 - `config.json` — runtime options consumed by `athena.py`
   - `classID` (string)
   - `color-scheme.primary|cancelled|changed|exam` (strings/IDs)
-  - `weeksAhead` (int)
+  - `weeksAhead`, `history` (int)
   - `maintenance`, `showCancelled`, `showChanges` (bool)
 - `environment.json` — integration values
   - `calendarID`, `cookie`, `anonymous-school`, `telegramToken`, `telegramChat`

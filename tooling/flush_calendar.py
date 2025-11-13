@@ -1,15 +1,18 @@
 import json
+import sys
+
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from main.google_cal_connector import googleCalCon
-import sys
+
+from constants import files
 
 # Path to your credentials.json and environment.json files
-SERVICE_ACCOUNT_FILE = 'credentials.json'
-ENVIRONMENT_FILE = 'environment.json'
+SERVICE_ACCOUNT_FILE = files.CREDENTIALS
+ENVIRONMENT_FILE = files.ENVIRONMENT
 
 # Scopes (permissions) required for accessing the calendar
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
 HELP_TEXT = """
 Deletes all events from the configured school calendar.
@@ -25,37 +28,40 @@ This script will remove all events from the calendar specified in environment.js
 You will be prompted for confirmation before deletion.
 """
 
+
 def delete_all_calendar_events(simulate=False, verbose=False):
     """Deletes all events from the specified calendar, or simulates deletion if simulate=True."""
     try:
-        
         google = googleCalCon(weeks=-1, simulate=simulate, verbose=verbose)
 
         google.removeEvents()
 
     except Exception as e:
-        print(f'An error occurred: {e}')
+        print(f"An error occurred: {e}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help"):
         print(HELP_TEXT)
         sys.exit(0)
 
     simulate = "--simulate" in sys.argv
-    
+
     verbose = "--verbose" in sys.argv or "-v" in sys.argv
 
     try:
-        with open(ENVIRONMENT_FILE, 'r') as f:
+        with open(ENVIRONMENT_FILE, "r") as f:
             env = json.load(f)
-            calendar_id_to_clear = env['calendarID']
+            calendar_id_to_clear = env["calendarID"]
 
         if simulate:
             print("Simulation mode enabled. No events will be deleted.\n")
             delete_all_calendar_events(simulate=simulate, verbose=verbose)
         else:
-            confirmation = input(f"Are you sure you want to delete ALL events from calendar {calendar_id_to_clear}? (yes/no): ")
-            if confirmation.lower() == 'yes':
+            confirmation = input(
+                f"Are you sure you want to delete ALL events from calendar {calendar_id_to_clear}? (yes/no): "
+            )
+            if confirmation.lower() == "yes":
                 delete_all_calendar_events(verbose=verbose)
             else:
                 print("Deletion cancelled.")
