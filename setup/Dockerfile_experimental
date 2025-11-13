@@ -60,7 +60,7 @@ USER navigator
 RUN echo 'export VENV="/opt/venv/bin/activate"' >> /home/navigator/.bashrc
 RUN echo 'export SOURCE="/home/navigator/classcompass"' >> /home/navigator/.bashrc
 RUN echo "export DB_PATH=${DB_PATH}" >> /home/navigator/.bashrc
-RUN echo "cd $SOURCE" >> /home/navigator/.bashrc 
+RUN echo "cd $SOURCE" >> /home/navigator/.bashrc
 
 RUN git clone -b deploy_experimental https://github.com/Hannes-Schniz/classcompass.git
 
@@ -70,6 +70,7 @@ USER root
 # This isolates Python dependencies from the system Python installation
 RUN python3 -m venv /opt/venv
 RUN . /opt/venv/bin/activate && pip install -r /home/navigator/classcompass/setup/requirements.txt
+RUN . /opt/venv/bin/activate && pip install -e classcompass/
 
 RUN bash classcompass/setup.sh > /var/log/setup.log
 
@@ -109,4 +110,3 @@ RUN chmod +x /start.sh
 RUN chown -R navigator:navigator classcompass/
 
 CMD [ "/start.sh" ]
-
