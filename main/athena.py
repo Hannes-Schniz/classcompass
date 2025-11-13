@@ -4,10 +4,13 @@ from configReader import configExtract
 from datetime import datetime, timedelta, timezone
 from _maintenance.dbmaint import maintenance
 from constants import cfgParams, files
+from _alert.notificationDatahandler import NotificationHandler
+import os
 
 conf = configExtract(files.CONFIG.value).conf
 dataHandler = apiHandler() 
-calendar = calendarHandler(int(conf[cfgParams.WEEKSAHEAD.value]))
+calendar = calendarHandler(int(conf[cfgParams.WEEKSAHEAD.value]]))
+notify = NotificationHandler()
 
 for i in range(int(conf[cfgParams.WEEKSAHEAD.value])):
     currDate = (datetime.now(timezone.utc) + timedelta(days=i*7) ).strftime('%Y-%m-%d')
@@ -21,8 +24,11 @@ dataHandler.sendData()
 
 calendar.getData()
 
-calendar.deleteEvents()
-
 calendar.sendData(conf[cfgParams.COLORSCHEME.value], conf[cfgParams.SHOWCANCELLED.value], conf[cfgParams.SHOWCHANGED.value])
 
 maintenance(conf[cfgParams.MAXBATCH.value])
+
+if conf['maintenance'] != "True":
+    notify.notifyTelegram()
+
+maintenance(conf['maxBatch'])

@@ -45,10 +45,10 @@ class googleCalCon:
             files.CREDENTIALS, scopes=SCOPES
         )
 
-        return build("calendar", "v3", credentials=credentials)
-
-    # Dateformat : YYYY-MM-DDTHH:MM
-    def createEntry(self, event, simulate=None, verbose=None):
+        return build('calendar', 'v3', credentials=credentials)
+    
+    #Dateformat : YYYY-MM-DDTHH:MM
+    def checkInsertEvent(self, event, simulate=None, verbose=None):
         # Allow override per call, else use instance setting
         if simulate is None:
             simulate = self.simulate
@@ -66,7 +66,10 @@ class googleCalCon:
                 )
             return
 
-        if simulate:
+        return True
+
+    def sendEvent(self, event):
+        if self.simulate:
             print(f"[SIMULATION] Would create event: '{event['summary']}'")
             print(f"  Location: {event['location']}")
             print(f"  Description: {event['description']}")
@@ -77,7 +80,7 @@ class googleCalCon:
             # Also print the Telegram message that would be sent
             # self.sendMessage(namePrefix, name, location, description, start, end, simulate=True, verbose=verbose)
         else:
-            if verbose:
+            if self.verbose:
                 print(f"[VERBOSE] Creating event: {event['summary']}")
             # self.sendMessage(namePrefix, name, location, description, start, end, verbose=verbose)
             self.service.events().insert(
@@ -274,7 +277,7 @@ class googleCalCon:
                         print(f"[ERROR] {e}")
 
     def removeEvents(self, verbose=None):
-        events = self.getEntries(self.weeks)
+        events = self.getEntries(1)
 
         if self.simulate:
             print(
