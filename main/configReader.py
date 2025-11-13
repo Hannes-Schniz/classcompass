@@ -1,5 +1,6 @@
 import json
 import re
+from constants import cfgParams
 
 
 class configExtract:
@@ -19,9 +20,9 @@ class configExtract:
            
 
     def configCheck(self,conf):
-        if re.match(conf['classID'], "[0-9][0-9][0-9][0-9]") == None or len(conf['classID']) != 4:
+        if re.match(conf[cfgParams.CLASSID.value], "[0-9][0-9][0-9][0-9]") == None or len(conf[cfgParams.CLASSID.value]) != 4:
             raise Exception("No valid class ID configured")
-        if re.match(conf['weeksAhead'], "[0-9]") == None or len(conf['weeksAhead']) != 1:
+        if re.match(conf[cfgParams.WEEKSAHEAD.value], "[0-9]") == None or len(conf[cfgParams.WEEKSAHEAD.value]) != 1:
             raise Exception("No valid weeks lookahead configured")
         
     

@@ -1,31 +1,40 @@
-from _schedule.untisDataHandler import apiHandler
-from _calendar.calendarDataHandler import calendarHandler
-from configReader import configExtract
-from datetime import datetime, timedelta, timezone
-from _maintenance.dbmaint import maintenance
-from _alert.notificationDatahandler import NotificationHandler
 import os
+from datetime import datetime, timedelta, timezone
 
-conf = configExtract("config.json").conf
-dataHandler = apiHandler() 
-calendar = calendarHandler(int(conf['weeksAhead']))
+from _alert.notificationDatahandler import NotificationHandler
+from _calendar.calendarDataHandler import calendarHandler
+from _maintenance.dbmaint import maintenance
+from _schedule.untisDataHandler import apiHandler
+from configReader import configExtract
+
+from constants import cfgParams, files
+
+conf = configExtract(files.CONFIG.value).conf
+dataHandler = apiHandler()
+calendar = calendarHandler(int(conf[cfgParams.WEEKSAHEAD.value]))
 notify = NotificationHandler()
 
-for i in range(int(conf['weeksAhead'])):
-    currDate = (datetime.now(timezone.utc) + timedelta(days=i*7) ).strftime('%Y-%m-%d')
-    dt = datetime.strptime(currDate, '%Y-%m-%d')
+for i in range(int(conf[cfgParams.WEEKSAHEAD.value])):
+    currDate = (datetime.now(timezone.utc) + timedelta(days=i * 7)).strftime("%Y-%m-%d")
+    dt = datetime.strptime(currDate, "%Y-%m-%d")
     start = dt - timedelta(days=dt.weekday())
-    end = (start + timedelta(days=5)).strftime('%Y-%m-%d')
-    start = start.strftime('%Y-%m-%d')
-    dataHandler.getData(start=start, end=end, classID=conf['classID'])
-    
+    end = (start + timedelta(days=5)).strftime("%Y-%m-%d")
+    start = start.strftime("%Y-%m-%d")
+    dataHandler.getData(start=start, end=end, classID=conf[cfgParams.CLASSID.value])
+
 dataHandler.sendData()
 
 calendar.getData()
 
-calendar.sendData(conf['color-scheme'], conf['showCancelled'], conf['showChanged'])
+calendar.sendData(
+    conf[cfgParams.COLORSCHEME.value],
+    conf[cfgParams.SHOWCANCELLED.value],
+    conf[cfgParams.SHOWCHANGED.value],
+)
 
-if conf['maintenance'] != "True":
+maintenance(conf[cfgParams.MAXBATCH.value])
+
+if conf["maintenance"] != "True":
     notify.notifyTelegram()
 
-maintenance(conf['maxBatch'])
+maintenance(conf["maxBatch"])
