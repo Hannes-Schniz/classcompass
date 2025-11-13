@@ -19,11 +19,11 @@ app = Flask(__name__)
 app.secret_key = "classcompass-management-2025"
 
 # Configuration file paths
-CONFIG_FILE = files.CONFIG
-ENVIRONMENT_FILE = files.ENVIRONMENT
+CONFIG_FILE = files.CONFIG.value
+ENVIRONMENT_FILE = files.ENVIRONMENT.value
 
 # Database path from environment variable
-DB_PATH = os.environ.get("DB_PATH", dbParams.DBPATHDEF)
+DB_PATH = os.environ.get("DB_PATH", dbParams.DBPATHDEF.value)
 
 # Default configurations
 DEFAULT_CONFIG = {
@@ -43,7 +43,7 @@ DEFAULT_ENVIRONMENT = {
     "telegramChat": "",
 }
 
-CREDENTIALS_PATH = files.CREDENTIALS
+CREDENTIALS_PATH = files.CREDENTIALS.value
 
 
 # Utility Functions

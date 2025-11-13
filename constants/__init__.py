@@ -66,9 +66,9 @@ class credsParams(Enum):
 class dbParams(Enum):
     SQLDIRVAR = "SQL_DIR"
     DBPATHVAR = "DB_PATH"
-    DBPATHDEF = "maps.db"
+    DBPATHDEF = "/classcompass-db/maps.db"
     CREATECLASSESSQLFILE = "createClasses.sql"
-    CREATENOTIFICATIONFILE="createNotification.sql"
+    CREATENOTIFICATIONFILE = "createNotification.sql"
     CREATEDIFFSQLFILE = "createDiff.sql"
     CLASSESTABLE = "classes"
     DIFFTABLE = "diff"
@@ -119,9 +119,9 @@ mapBoolean = {
 
 
 class files(Enum):
-    CONFIG = "config.json"
-    CREDENTIALS = "credentials.json"
-    ENVIRONMENT = "environment.json"
+    CONFIG = "/classcompass-cfg/config.json"
+    CREDENTIALS = "/classcompass-cfg/credentials.json"
+    ENVIRONMENT = "/classcompass-cfg/environment.json"
 
 
 ######################################

@@ -31,7 +31,7 @@ class googleCalCon:
         self.verbose = verbose  # Add verbose mode flag
         service = self.authenticate()
         self.service = service
-        self.env = configExtract(files.ENVIRONMENT).conf
+        self.env = configExtract(files.ENVIRONMENT.value).conf
         if weeks != -1:
             self.weeks = weeks
         else:
@@ -42,12 +42,12 @@ class googleCalCon:
         SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
         credentials = service_account.Credentials.from_service_account_file(
-            files.CREDENTIALS, scopes=SCOPES
+            files.CREDENTIALS.value, scopes=SCOPES
         )
 
-        return build('calendar', 'v3', credentials=credentials)
-    
-    #Dateformat : YYYY-MM-DDTHH:MM
+        return build("calendar", "v3", credentials=credentials)
+
+    # Dateformat : YYYY-MM-DDTHH:MM
     def checkInsertEvent(self, event, simulate=None, verbose=None):
         # Allow override per call, else use instance setting
         if simulate is None:

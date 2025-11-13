@@ -1,16 +1,14 @@
+from datetime import datetime
+
 from _calendar.google_cal_connector import googleCalCon
 from _database.sqliteConnector import plutus
-from datetime import datetime
 
 from constants import cfgParams, dbParams
 
 
 class calendarHandler:
-    
-    classes=None
+    classes = None
 
-    old_classes = None
-    
     calendar = None
 
     def __init__(self, weeks):
@@ -19,15 +17,11 @@ class calendarHandler:
     def getData(self):
         database = plutus()
         database.connect()
-        
-        batchID = database.getNewBatchID("classes") - 1
 
-        batchID = database.getNewBatchID(dbParams.CLASSESTABLE) - 1
+        batchID = database.getNewBatchID(dbParams.CLASSESTABLE.value) - 1
 
         self.classes = database.getClasses(batchID=batchID)
 
-        self.classes = database.getClasses(batchID=old_batchID)
-        
         database.closeConnection()
 
         return 0
@@ -37,15 +31,11 @@ class calendarHandler:
         deleteCal = False
         for entry in self.classes:
             color = None
-            if entry["state"] == 'CANCELLED':
-                if entry not in self.old_classes:
-                    deleteCal = True
+            if entry["state"] == "CANCELLED":
                 if not showCancelled:
                     continue
-                color = colorscheme['cancelled']
-            elif entry["state"] == 'CHANGED':
-                if entry not in self.old_classes:
-                    deleteCal = True
+                color = colorscheme["cancelled"]
+            elif entry["state"] == "CHANGED":
                 if not showChanged:
                     continue
                 color = colorscheme["changed"]
@@ -54,18 +44,18 @@ class calendarHandler:
             if entry["type"] == "EXAM":
                 color = colorscheme["exam"]
             event = self.calendar.buildEvent(
-                    name=entry["name"],
-                    location=entry["room"],
-                    description=f"Comment: {entry['substituteText']}",
-                    namePrefix=f"{entry["state"]} ",
-                    background=color,
-                    start=entry["startTime"],
-                    end=entry["endTime"]
-                    )
-            if (datetime.fromisoformat(event['start'].get('dateTime')) < datetime.now()):
+                name=entry["name"],
+                location=entry["room"],
+                description=f"Comment: {entry['substituteText']}",
+                namePrefix=f"{entry['state']} ",
+                background=color,
+                start=entry["startTime"],
+                end=entry["endTime"],
+            )
+            if datetime.fromisoformat(event["start"].get("dateTime")) < datetime.now():
                 continue
             insert = self.calendar.checkInsertEvent(event=event)
-            if (insert):
+            if insert:
                 deleteCal = True
             insertQueue.append(event)
 
@@ -77,7 +67,6 @@ class calendarHandler:
         for event in insertQueue:
             self.calendar.sendEvent(event)
 
-    
     def deleteEvents(self):
         database = plutus()
         database.connect()
@@ -97,5 +86,5 @@ class calendarHandler:
         if len(currClasses) > len(oldClasses):
             self.calendar.removeEvents()
             return 1
-            
+
         return 0

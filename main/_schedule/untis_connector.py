@@ -7,7 +7,7 @@ from constants import files
 class exporter:
     urlRest = "https://erato.webuntis.com/WebUntis/api/rest/view/v1/timetable/entries"
 
-    conf = configExtract(files.ENVIRONMENT).conf
+    conf = configExtract(files.ENVIRONMENT.value).conf
 
     headers = {
         "accept": "application/json, text/plain, */*",

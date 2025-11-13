@@ -5,10 +5,10 @@ from configReader import configExtract
 
 from constants import envFile, files
 
-env = configExtract(files.ENVIRONMENT).conf
-maint = configExtract(files.CONFIG).conf["maintenance"] == 1
-TOKEN = env[envFile.BOTTOKEN]
-chat_id = env[envFile.CHAT]
+env = configExtract(files.ENVIRONMENT.value).conf
+maint = configExtract(files.CONFIG.value).conf["maintenance"] == 1
+TOKEN = env[envFile.BOTTOKEN.value]
+chat_id = env[envFile.CHAT.value]
 
 
 def sendMessage(message):
@@ -30,16 +30,18 @@ def shareCalendar():
         url = f"https://api.telegram.org/bot{TOKEN}/getUpdates"
         print(requests.get(url=url, params=params).json())
         time.sleep(1)
+
+
 import requests
 
-class TelegramBot():
 
+class TelegramBot:
     def sendMessage(self, chat, token, message):
-        params = {"chat_id":chat,"text": message, "parse_mode": "HTML"}
+        params = {"chat_id": chat, "text": message, "parse_mode": "HTML"}
         url = f"https://api.telegram.org/bot{token}/sendMessage"
         requests.post(url=url, params=params)
 
-    #def shareCalendar(self):
+    # def shareCalendar(self):
     #    params = {}
     #    while True:
     #        url = f"https://api.telegram.org/bot{self.TOKEN}/getUpdates"

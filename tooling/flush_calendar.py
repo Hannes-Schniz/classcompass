@@ -8,8 +8,8 @@ from main.google_cal_connector import googleCalCon
 from constants import files
 
 # Path to your credentials.json and environment.json files
-SERVICE_ACCOUNT_FILE = files.CREDENTIALS
-ENVIRONMENT_FILE = files.ENVIRONMENT
+SERVICE_ACCOUNT_FILE = files.CREDENTIALS.value
+ENVIRONMENT_FILE = files.ENVIRONMENT.value
 
 # Scopes (permissions) required for accessing the calendar
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
