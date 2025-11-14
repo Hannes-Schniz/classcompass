@@ -66,7 +66,7 @@ class credsParams(Enum):
 class dbParams(Enum):
     SQLDIRVAR = "SQL_DIR"
     DBPATHVAR = "DB_PATH"
-    DBPATHDEF = "/classcompass-db/maps.db"
+    DBPATHDEF = "/classcompass-data/maps.db"
     CREATECLASSESSQLFILE = "createClasses.sql"
     CREATENOTIFICATIONFILE = "createNotification.sql"
     CREATEDIFFSQLFILE = "createDiff.sql"

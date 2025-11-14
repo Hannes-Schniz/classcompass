@@ -74,6 +74,10 @@ RUN python3 -m venv /opt/venv
 RUN . /opt/venv/bin/activate && pip install -r /home/navigator/classcompass/setup/requirements.txt
 RUN . /opt/venv/bin/activate && pip install -e classcompass/
 
+RUN mkdir /classcompass-cfg
+
+RUN mkdir /classcompass-data
+
 RUN bash classcompass/setup.sh > /var/log/setup.log
 
 # Configure the navigator user's shell to automatically activate the virtual environment
