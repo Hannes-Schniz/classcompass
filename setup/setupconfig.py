@@ -28,6 +28,7 @@ DEFAULTMAINTENANCE = False
 DEFAULTSHOWCANCELLED = False
 DEFAULTSHOWCHANGED = False
 DEFAULTMAXBATCH = 4032
+DEFAULTGROUP = ""
 
 
 def get_env_or_default(env_var, default_value, value_type=str):
@@ -102,6 +103,9 @@ def create_config():
         ),
         cfgParams.SHOWCHANGED.value: get_env_or_default(
             envParams.SHOWCHANGED.value, DEFAULTSHOWCHANGED, bool
+        ),
+        cfgParams.LABGROUP.value: get_env_or_default(
+            envParams.LABGROUP.value, DEFAULTGROUP
         ),
         cfgParams.MAXBATCH.value: get_env_or_default(
             envParams.MAXBATCH.value, DEFAULTMAXBATCH, int
@@ -198,6 +202,7 @@ def main():
             (envParams.MAINTENANCE.value, config[cfgParams.MAINTENANCE.value]),
             (envParams.SHOWCANCELLED.value, config[cfgParams.SHOWCANCELLED.value]),
             (envParams.SHOWCHANGED.value, config[cfgParams.SHOWCHANGED.value]),
+            (envParams.LABGROUP.value, config[cfgParams.LABGROUP.value]),
             (envParams.MAXBATCH.value, config[cfgParams.MAXBATCH.value]),
         ]
 

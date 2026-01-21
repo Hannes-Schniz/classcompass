@@ -31,6 +31,7 @@ class cfgParams(Enum):
     MAINTENANCE = "maintenance"
     SHOWCANCELLED = "showCancelled"
     SHOWCHANGED = "showChanged"
+    LABGROUP = "labGroup"
     MAXBATCH = "maxBatch"
 
 
@@ -91,6 +92,7 @@ class envParams(Enum):
     MAINTENANCE = "MAINTENANCE"
     SHOWCANCELLED = "SHOW_CANCELLED"
     SHOWCHANGED = "SHOW_CHANGED"
+    LABGROUP = "LAB_GROUP"
     MAXBATCH = "MAX_BATCH"
 
 
