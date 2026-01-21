@@ -74,7 +74,13 @@ RUN . /opt/venv/bin/activate && pip install -e classcompass/
 
 RUN mkdir /classcompass-cfg
 
+RUN chown -R navigator:navigator /classcompass-cfg
+
 RUN mkdir /classcompass-data
+
+RUN chown -R navigator:navigator /classcompass-data
+
+USER navigator
 
 RUN bash classcompass/setup.sh > /var/log/setup.log
 
