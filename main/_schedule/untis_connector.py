@@ -5,9 +5,13 @@ from constants import files
 
 
 class exporter:
-    urlRest = "https://erato.webuntis.com/WebUntis/api/rest/view/v1/timetable/entries"
-
     conf = configExtract(files.ENVIRONMENT.value).conf
+
+    urlRest = (
+        "https://"
+        + conf["anonymous-school"]
+        + ".webuntis.com/WebUntis/api/rest/view/v1/timetable/entries"
+    )
 
     headers = {
         "accept": "application/json, text/plain, */*",
@@ -45,6 +49,7 @@ class exporter:
         except:
             raise Exception("Failed to retrieve Untis data correctly")
 
+        print(response)
         periods = []
         diffs = []
         for day in raw_data["days"]:
@@ -58,6 +63,7 @@ class exporter:
                 changes = None
                 changedClass = None
                 changedRoom = None
+                labGroup = None
                 subText = entry["substitutionText"]
                 if subText == None:
                     subText = ""
@@ -68,6 +74,11 @@ class exporter:
                 if entry["position2"]:
                     if entry["position2"][0]["current"]:
                         room = entry["position2"][0]["current"]["displayName"]
+                if entry["position3"]:
+                    if entry["position3"][0]["current"]:
+                        labGroup = entry["position3"][0]["current"][
+                            "displayName"
+                        ].split("_")[1]
                 if entry["statusDetail"] == "MOVED" and entry["status"] == "CANCELLED":
                     oldStart = start
                     oldEnd = end
@@ -93,6 +104,7 @@ class exporter:
                         "room": room,
                         "subject": shortName,
                         "substituteText": subText,
+                        "group": labGroup,
                     }
                 )
                 if status != "REGULAR":
@@ -114,6 +126,7 @@ class exporter:
                             "newSubject": shortName,
                             "newText": subText,
                             "oldText": "",
+                            "group": labGroup,
                         }
                     )
 

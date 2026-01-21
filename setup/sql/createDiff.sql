@@ -15,4 +15,5 @@ CREATE TABLE diff(
     oldSubject,
     newSubject,
     oldText,
-    newText)
+    newText,
+    group)

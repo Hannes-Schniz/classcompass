@@ -4,6 +4,7 @@ CREATE TABLE classes(
     startTime, 
     endTime, 
     type, 
+    group,
     state,
     stateDetail,
     room,
