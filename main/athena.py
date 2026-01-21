@@ -30,6 +30,7 @@ calendar.sendData(
     conf[cfgParams.COLORSCHEME.value],
     conf[cfgParams.SHOWCANCELLED.value],
     conf[cfgParams.SHOWCHANGED.value],
+    conf[cfgParams].LABGROUP.value],
 )
 
 maintenance(conf[cfgParams.MAXBATCH.value])

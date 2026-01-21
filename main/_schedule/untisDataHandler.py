@@ -2,23 +2,24 @@ from _schedule.untis_connector import exporter
 from _database.sqliteConnector import plutus
 from constants import api, logLevel, dbParams
 
+
 class apiHandler:
+    diffs = []
+    classes = []
 
-    diffs=[]
-    classes=[]
-    
-
-    def getData(self,start, end,classID):
+    def getData(self, start, end, classID):
         untis_exporter = exporter()
 
-        untisData = untis_exporter.getData(start=start, end=end, classID=classID, verbose=True)
+        untisData = untis_exporter.getData(
+            start=start, end=end, classID=classID, verbose=True
+        )
         self.diffs += untisData[1]
         self.classes += untisData[0]
-        
-    def sendData(self):
+
+    def sendData(self, labGroup):
         database = plutus()
         database.connect()
-        
+
         try:
             batchID = database.getNewBatchID(dbParams.CLASSESTABLE.value)
             # Process and insert classes data
@@ -34,10 +35,13 @@ class apiHandler:
                         stateDetail=item[api.STATEDETAIL.value],
                         room=item[api.ROOM.value],
                         subject=item[api.SUBJECT.value],
-                        substituteText=item[api.SUBSTITUTETEXT.value]
+                        substituteText=item[api.SUBSTITUTETEXT.value],
+                        labGroup=labGroup,
                     )
-                print(f"[{logLevel.INFO.value}] Successfully inserted {len(self.classes)} classes with batchID {batchID}")
-            
+                print(
+                    f"[{logLevel.INFO.value}] Successfully inserted {len(self.classes)} classes with batchID {batchID}"
+                )
+
             # Process and insert diffs data
             if self.diffs is not []:
                 for item in self.diffs:
@@ -58,14 +62,17 @@ class apiHandler:
                         oldSubject=item[api.OLDSUBJECT.value],
                         newSubject=item[api.NEWSUBJECT.value],
                         oldText=item[api.OLDTEXT.value],
-                        newText=item[api.NEWTEXT.value]
+                        newText=item[api.NEWTEXT.value],
+                        labGroup=labGroup,
                     )
-                print(f"[{logLevel.INFO.value}] Successfully inserted {len(self.diffs)} diffs with batchID {batchID}")
-        
+                print(
+                    f"[{logLevel.INFO.value}] Successfully inserted {len(self.diffs)} diffs with batchID {batchID}"
+                )
+
         except Exception as e:
             print(f"[{logLevel.ERROR.value}] Error inserting data: {e}")
             raise e
         finally:
             # Always close the database connection
             database.closeConnection()
-        
+
